@@ -34,7 +34,7 @@
 # Practice Stack
 - 描述一下你們使用的軟體方法論 :
    - Event Storming
-   - BDD (Example Mapping)
+   - Example Mapping
    - ATDD
 
 ## Tech Stack

@@ -14,6 +14,11 @@ namespace Gobblet_Gobblers
             Size = size;
         }
 
+        public void Print()
+        {
+            this.Color.ToPrint(this.Size.ToSymbol());
+        }
+
         public int Compare(Cock? x, Cock? y)
         {
             if (x == null)

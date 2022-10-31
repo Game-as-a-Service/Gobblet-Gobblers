@@ -22,6 +22,28 @@ namespace Gobblet_Gobblers
         {
             _board = new Stack<Cock>[boardSize * boardSize];
             _players = new Player[2];
+
+
+            _players[0] = new Player("Josh", new List<Cock>
+            {
+                new Cock(Color.Orange, Size.Small),
+                new Cock(Color.Orange, Size.Small),
+                new Cock(Color.Orange, Size.Medium),
+                new Cock(Color.Orange, Size.Medium),
+                new Cock(Color.Orange, Size.Large),
+                new Cock(Color.Orange, Size.Large),
+            });
+
+            _players[1] = new Player("Tom", new List<Cock>
+            {
+                new Cock(Color.Blue, Size.Small),
+                new Cock(Color.Blue, Size.Small),
+                new Cock(Color.Blue, Size.Medium),
+                new Cock(Color.Blue, Size.Medium),
+                new Cock(Color.Blue, Size.Large),
+                new Cock(Color.Blue, Size.Large),
+            });
+
             _winColor = Color.Orange;
 
             for (var i = 0; i < _board.Length; i++)
@@ -48,30 +70,73 @@ namespace Gobblet_Gobblers
 
         internal void Start()
         {
-            foreach (var player in _players)
+            Print();
+
+            while (true)
             {
-                var control = 1;
-                var fromIndex = 0;
-                var toIndex = 0;
-
-                if (control == 1)
+                foreach (var player in _players)
                 {
-                    var cock = new Cock(Color.Orange, Size.Large);
 
-                    Place(cock, toIndex);
-                }
-                else if (control == 2)
-                {
-                    Move(fromIndex, toIndex);
-                    if (Gameover(fromIndex))
+                    Console.WriteLine("[1]:Place, [2]:Move");
+                    var control = Console.ReadLine();
+                    var fromIndex = 0;
+                    var toIndex = 0;
+
+                    if (control == "1")
+                    {
+                        player.Print();
+                        var cockIndex = int.Parse(Console.ReadLine());
+                        var cock = player.GetCock(cockIndex);
+
+                        Console.WriteLine("Pacle 0~9 Location");
+                        toIndex = int.Parse(Console.ReadLine());
+
+                        Place(cock, toIndex);
+                    }
+                    else if (control == "2")
+                    {
+                        Move(fromIndex, toIndex);
+                        if (Gameover(fromIndex))
+                        {
+                            return;
+                        }
+                    }
+
+                    Print();
+
+                    if (Gameover(toIndex))
                     {
                         return;
                     }
                 }
+            }
+        }
 
-                if (Gameover(toIndex))
+        internal void Print()
+        {
+            var bound = string.Join("\u3000", Enumerable.Range(0, this.boardSize).Select(x => "—"));
+            Console.WriteLine($"\u3000{bound}\u3000");
+
+            for (var i = 0; i < this._board.Length; i++)
+            {
+                var cocks = this._board[i];
+
+                if ((i + 1) % this.boardSize == 1)
                 {
-                    return;
+                    Console.Write("｜");
+                }
+
+                if (cocks.TryPeek(out var cock))
+                    cock.Print();
+                else
+                    Console.Write("\u3000");
+
+                Console.Write("｜");
+
+                if ((i + 1) % this.boardSize == 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"\u3000{bound}\u3000");
                 }
             }
         }
@@ -127,7 +192,6 @@ namespace Gobblet_Gobblers
 
                 return false;
             }
-
 
             return false;
         }

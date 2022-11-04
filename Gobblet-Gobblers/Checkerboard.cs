@@ -13,11 +13,11 @@ namespace Gobblet_Gobblers
 
         private Color _winColor;
 
-        private readonly Dictionary<int, int[]> _horizontal = new Dictionary<int, int[]>();
+        private readonly Dictionary<int, int[]> _horizontal = new();
 
-        private readonly Dictionary<int, int[]> _vertical = new Dictionary<int, int[]>();
+        private readonly Dictionary<int, int[]> _vertical = new();
 
-        private readonly Dictionary<int, int[]> _incline = new Dictionary<int, int[]>();
+        private readonly Dictionary<int, int[]> _incline = new();
 
         internal Checkerboard()
         {

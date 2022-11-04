@@ -1,4 +1,5 @@
 ﻿using Gobblet_Gobblers.Enums;
+using Gobblet_Gobblers.Sizes;
 
 namespace Gobblet_Gobblers
 {
@@ -26,22 +27,22 @@ namespace Gobblet_Gobblers
 
             _players[0] = new Player("Josh", new List<Cock>
             {
-                new Cock(Color.Orange, Size.Small),
-                new Cock(Color.Orange, Size.Small),
-                new Cock(Color.Orange, Size.Medium),
-                new Cock(Color.Orange, Size.Medium),
-                new Cock(Color.Orange, Size.Large),
-                new Cock(Color.Orange, Size.Large),
+                new Cock(Color.Orange, new Small()),
+                new Cock(Color.Orange, new Small()),
+                new Cock(Color.Orange, new Medium()),
+                new Cock(Color.Orange, new Medium()),
+                new Cock(Color.Orange, new Large()),
+                new Cock(Color.Orange, new Large()),
             });
 
             _players[1] = new Player("Tom", new List<Cock>
             {
-                new Cock(Color.Blue, Size.Small),
-                new Cock(Color.Blue, Size.Small),
-                new Cock(Color.Blue, Size.Medium),
-                new Cock(Color.Blue, Size.Medium),
-                new Cock(Color.Blue, Size.Large),
-                new Cock(Color.Blue, Size.Large),
+                new Cock(Color.Blue, new Small()),
+                new Cock(Color.Blue, new Small()),
+                new Cock(Color.Blue, new Medium()),
+                new Cock(Color.Blue, new Medium()),
+                new Cock(Color.Blue, new Large()),
+                new Cock(Color.Blue, new Large()),
             });
 
             _winColor = Color.Orange;
@@ -76,29 +77,39 @@ namespace Gobblet_Gobblers
             {
                 foreach (var player in _players)
                 {
-
-                    Console.WriteLine("[1]:Place, [2]:Move");
-                    var control = Console.ReadLine();
+                    var isNext = false;
                     var fromIndex = 0;
                     var toIndex = 0;
 
-                    if (control == "1")
+                    while (!isNext)
                     {
-                        player.Print();
-                        var cockIndex = int.Parse(Console.ReadLine());
-                        var cock = player.GetCock(cockIndex);
+                        Console.WriteLine($"{player.Name} [1]:Place, [2]:Move");
+                        var control = Console.ReadLine();
 
-                        Console.WriteLine("Pacle 0~9 Location");
-                        toIndex = int.Parse(Console.ReadLine());
-
-                        Place(cock, toIndex);
-                    }
-                    else if (control == "2")
-                    {
-                        Move(fromIndex, toIndex);
-                        if (Gameover(fromIndex))
+                        if (control == "1")
                         {
-                            return;
+                            player.Print();
+                            var cockIndex = int.Parse(Console.ReadLine());
+                            var cock = player.GetCock(cockIndex);
+
+                            Console.WriteLine($"{player.Name} Pacle 0~9 Location");
+                            toIndex = int.Parse(Console.ReadLine());
+
+                            isNext = Place(cock, toIndex);
+
+                            if (isNext)
+                            {
+                                player.RemoveCock(cockIndex);
+                            }
+                        }
+                        else if (control == "2")
+                        {
+                            isNext = Move(fromIndex, toIndex);
+
+                            if (Gameover(fromIndex))
+                            {
+                                return;
+                            }
                         }
                     }
 
@@ -141,20 +152,26 @@ namespace Gobblet_Gobblers
             }
         }
 
-        internal void Place(Cock cock, int location)
+        internal bool Place(Cock cock, int location)
         {
             if (!_board[location].TryPeek(out var c) || c.CompareTo(cock) < 0)
             {
                 _board[location].Push(cock);
+
+                return true;
             }
+
+            return false;
         }
 
-        internal void Move(int fromIndex, int toIndex)
+        internal bool Move(int fromIndex, int toIndex)
         {
-            if (_board[fromIndex].TryPop(out var c))
+            if (_board[fromIndex].TryPop(out var c) && Place(c, toIndex))
             {
-                Place(c, toIndex);
+                return true;
             }
+
+            return false;
         }
 
         internal bool Gameover(int location)

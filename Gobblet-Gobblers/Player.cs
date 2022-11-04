@@ -15,10 +15,15 @@
         internal Cock GetCock(int index)
         {
             var cock = _cocks[index];
-            _cocks.RemoveAt(index);
 
             return cock;
         }
+
+        internal void RemoveCock(int index)
+        {
+            _cocks.RemoveAt(index);
+        }
+
 
         internal void SetCock(Cock cock)
         {

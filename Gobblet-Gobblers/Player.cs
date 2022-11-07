@@ -1,42 +1,63 @@
-﻿namespace Gobblet_Gobblers
+﻿using Gobblet_Gobblers.Enums;
+
+namespace Gobblet_Gobblers
 {
-    internal class Player
+    public class Player
     {
-        internal string Name { get; private set; }
+        public Color Color { get; private set; }
 
-        private IList<Cock> _cocks;
+        public string? Name { get; private set; }
 
-        internal Player(string name, IEnumerable<Cock> cocks)
+        private ICollection<Cock> _cocks = new List<Cock>();
+
+        public Player(Color color)
         {
-            Name = name;
-            _cocks = cocks.ToList();
+            this.Color = color;
         }
 
-        internal Cock GetCock(int index)
+        public Player Nameself(string name)
         {
-            var cock = _cocks[index];
+            this.Name = name;
+
+            return this;
+        }
+
+        public Player AddCocks(IEnumerable<Cock> cocks)
+        {
+            foreach (var cock in cocks)
+            {
+                this._cocks.Add(cock);
+            }
+
+            _cocks = _cocks.OrderByDescending(c => c.Color).ToList();
+
+            return this;
+        }
+
+        public Cock GetCock(int index)
+        {
+            var cock = _cocks.ElementAt(index);
 
             return cock;
         }
 
-        internal void RemoveCock(int index)
+        public void RemoveCock(int index)
         {
-            _cocks.RemoveAt(index);
+            _cocks.Remove(_cocks.ElementAt(index));
         }
 
 
-        internal void SetCock(Cock cock)
+        public void AddCock(Cock cock)
         {
-            this._cocks.Add(cock);
-            this._cocks = this._cocks.OrderBy(c => c.Size).ToList();
+            this.AddCocks(new List<Cock> { cock });
         }
 
-        internal void Print()
+        public void Print()
         {
             for (int i = 0; i < this._cocks.Count; i++)
             {
                 Console.Write($"[{i}]:");
-                this._cocks[i].Print();
+                this._cocks.ElementAt(i).Print();
                 Console.Write($" ");
             }
 

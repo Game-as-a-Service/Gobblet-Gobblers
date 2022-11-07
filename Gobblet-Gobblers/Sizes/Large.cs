@@ -1,6 +1,6 @@
 ﻿namespace Gobblet_Gobblers.Sizes
 {
-    internal class Large : ISize
+    public class Large : ISize
     {
         public int Number => 1;
 

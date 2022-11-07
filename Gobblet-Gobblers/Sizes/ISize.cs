@@ -1,6 +1,6 @@
 ﻿namespace Gobblet_Gobblers.Sizes
 {
-    internal interface ISize
+    public interface ISize
     {
         int Number { get; }
 

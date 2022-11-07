@@ -1,17 +1,14 @@
-﻿using Gobblet_Gobblers.Enums;
-using Gobblet_Gobblers.Sizes;
-
-namespace Gobblet_Gobblers
+﻿namespace Gobblet_Gobblers
 {
-    internal class Checkerboard
+    public class Checkerboard
     {
-        private readonly int boardSize = 3;
+        private readonly int checkerboardSize = 3;
 
         private readonly Stack<Cock>[] _board;
 
         private readonly Player[] _players;
 
-        private Color _winColor;
+        private Player _winner;
 
         private readonly Dictionary<int, int[]> _horizontal = new();
 
@@ -19,60 +16,56 @@ namespace Gobblet_Gobblers
 
         private readonly Dictionary<int, int[]> _incline = new();
 
-        internal Checkerboard()
+        public Checkerboard(int checkerboardSize, Player[] players)
         {
-            _board = new Stack<Cock>[boardSize * boardSize];
-            _players = new Player[2];
+            this._board = InitIalCheckerboard(checkerboardSize);
+            this._players = players;
 
+            InitIalWinCondition();
+        }
 
-            _players[0] = new Player("Josh", new List<Cock>
+        private Stack<Cock>[] InitIalCheckerboard(int checkerboardSize)
+        {
+            var board = new Stack<Cock>[checkerboardSize * checkerboardSize];
+
+            for (var i = 0; i < board.Length; i++)
             {
-                new Cock(Color.Orange, new Small()),
-                new Cock(Color.Orange, new Small()),
-                new Cock(Color.Orange, new Medium()),
-                new Cock(Color.Orange, new Medium()),
-                new Cock(Color.Orange, new Large()),
-                new Cock(Color.Orange, new Large()),
-            });
-
-            _players[1] = new Player("Tom", new List<Cock>
-            {
-                new Cock(Color.Blue, new Small()),
-                new Cock(Color.Blue, new Small()),
-                new Cock(Color.Blue, new Medium()),
-                new Cock(Color.Blue, new Medium()),
-                new Cock(Color.Blue, new Large()),
-                new Cock(Color.Blue, new Large()),
-            });
-
-            _winColor = Color.Orange;
-
-            for (var i = 0; i < _board.Length; i++)
-            {
-                _board[i] = new Stack<Cock>();
+                board[i] = new Stack<Cock>();
             }
 
+            return board;
+        }
+
+        private void InitIalWinCondition()
+        {
             // 橫
-            for (var i = 0; i < boardSize; i++)
+            for (var i = 0; i < checkerboardSize; i++)
             {
-                _horizontal[i] = Enumerable.Range(i * boardSize, boardSize).ToArray();
+                _horizontal[i] = Enumerable.Range(i * checkerboardSize, checkerboardSize).ToArray();
             }
 
             // 縱
-            for (var i = 0; i < boardSize; i++)
+            for (var i = 0; i < checkerboardSize; i++)
             {
-                _vertical[i] = Enumerable.Range(i, boardSize).Select(x => i + (x - i) * boardSize).ToArray();
+                _vertical[i] = Enumerable.Range(i, checkerboardSize).Select(x => i + (x - i) * checkerboardSize).ToArray();
             }
 
             // 斜
-            _incline[0] = Enumerable.Range(0, boardSize).Select(x => x + x * boardSize).ToArray();
-            _incline[boardSize - 1] = Enumerable.Range(0, boardSize).Select(x => boardSize - x - 1 + x * boardSize).ToArray();
+            _incline[0] = Enumerable.Range(0, checkerboardSize).Select(x => x + x * checkerboardSize).ToArray();
+            _incline[checkerboardSize - 1] = Enumerable.Range(0, checkerboardSize).Select(x => checkerboardSize - x - 1 + x * checkerboardSize).ToArray();
         }
 
-        internal void Start()
+        public void Start()
         {
             Print();
 
+            Process();
+
+            ShowWinner();
+        }
+
+        private void Process()
+        {
             while (true)
             {
                 foreach (var player in _players)
@@ -123,16 +116,16 @@ namespace Gobblet_Gobblers
             }
         }
 
-        internal void Print()
+        public void Print()
         {
-            var bound = string.Join("\u3000", Enumerable.Range(0, this.boardSize).Select(x => "—"));
+            var bound = string.Join("\u3000", Enumerable.Range(0, this.checkerboardSize).Select(x => "—"));
             Console.WriteLine($"\u3000{bound}\u3000");
 
             for (var i = 0; i < this._board.Length; i++)
             {
                 var cocks = this._board[i];
 
-                if ((i + 1) % this.boardSize == 1)
+                if ((i + 1) % this.checkerboardSize == 1)
                 {
                     Console.Write("｜");
                 }
@@ -144,7 +137,7 @@ namespace Gobblet_Gobblers
 
                 Console.Write("｜");
 
-                if ((i + 1) % this.boardSize == 0)
+                if ((i + 1) % this.checkerboardSize == 0)
                 {
                     Console.WriteLine();
                     Console.WriteLine($"\u3000{bound}\u3000");
@@ -152,7 +145,7 @@ namespace Gobblet_Gobblers
             }
         }
 
-        internal bool Place(Cock cock, int location)
+        public bool Place(Cock cock, int location)
         {
             if (!_board[location].TryPeek(out var c) || c.CompareTo(cock) < 0)
             {
@@ -164,7 +157,7 @@ namespace Gobblet_Gobblers
             return false;
         }
 
-        internal bool Move(int fromIndex, int toIndex)
+        public bool Move(int fromIndex, int toIndex)
         {
             if (_board[fromIndex].TryPop(out var c) && Place(c, toIndex))
             {
@@ -174,18 +167,23 @@ namespace Gobblet_Gobblers
             return false;
         }
 
-        internal bool Gameover(int location)
+        public Cock? GetCock(int index)
+        {
+            return _board[index].TryPeek(out var c) ? c : default(Cock);
+        }
+
+        public bool Gameover(int location)
         {
             var cock = _board[location].Peek();
-            _winColor = cock.Color;
+            _winner = this._players.First(p => p.Color == cock.Color);
 
             // 橫
-            var horizontalIndex = location / boardSize;
+            var horizontalIndex = location / checkerboardSize;
             if (CheckCondition(_horizontal, horizontalIndex))
                 return true;
 
             // 縱
-            var verticalIndex = location % boardSize;
+            var verticalIndex = location % checkerboardSize;
             if (CheckCondition(_vertical, verticalIndex))
                 return true;
 
@@ -202,7 +200,7 @@ namespace Gobblet_Gobblers
             bool CheckCondition(Dictionary<int, int[]> conditionDic, int index)
             {
                 if (conditionDic.TryGetValue(index, out var indexs) &&
-                    indexs.All(i => _board[i].TryPeek(out var c) && c.Equals(cock)))
+                    indexs.All(i => _board[i].TryPeek(out var c) && c.EqualsColor(cock)))
                 {
                     return true;
                 }
@@ -211,6 +209,11 @@ namespace Gobblet_Gobblers
             }
 
             return false;
+        }
+
+        public void ShowWinner()
+        {
+            Console.WriteLine($"Winner:{this._winner.Name}");
         }
     }
 }

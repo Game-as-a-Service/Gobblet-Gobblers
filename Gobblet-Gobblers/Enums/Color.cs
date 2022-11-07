@@ -1,6 +1,6 @@
 ﻿namespace Gobblet_Gobblers.Enums
 {
-    internal enum Color
+    public enum Color
     {
         /// <summary>
         /// 橘色
@@ -18,6 +18,7 @@
         internal static void ToPrint(this Color color, string content)
         {
             var consoleColor = ConsoleColor.Black;
+
             switch (color)
             {
                 case Color.Orange:
@@ -27,6 +28,7 @@
                     consoleColor = ConsoleColor.Blue;
                     break;
             }
+
             Console.ForegroundColor = consoleColor;
             Console.Write(content);
             Console.ResetColor();

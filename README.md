@@ -28,8 +28,12 @@
     ![移動棋子](https://i.imgur.com/G11UpxA.png)
 
 ## References
+### 遊戲參考
 1. [童教桌遊研究院](https://mj9981168.pixnet.net/blog/post/196478085-%E5%A5%87%E9%9B%9E%E9%80%A3%E9%80%A3%28gobblet-gobbler%29)
 2. [CAPSTONE](https://shop.capstone.hk/products/gobblet-gobblers)
+
+### 技術參考
+1. [Think in Domain-Driven Design](https://ithelp.ithome.com.tw/users/20111997/ironman/2730?page=1)
 
 # Practice Stack
 - 描述一下你們使用的軟體方法論 :

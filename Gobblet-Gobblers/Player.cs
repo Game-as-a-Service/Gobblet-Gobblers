@@ -1,18 +1,13 @@
-﻿using Gobblet_Gobblers.Enums;
-
-namespace Gobblet_Gobblers
+﻿namespace Gobblet_Gobblers
 {
     public class Player
     {
-        public Color Color { get; private set; }
-
         public string? Name { get; private set; }
 
         private ICollection<Cock> _cocks = new List<Cock>();
 
-        public Player(Color color)
+        public Player()
         {
-            this.Color = color;
         }
 
         public Player Nameself(string name)
@@ -26,10 +21,12 @@ namespace Gobblet_Gobblers
         {
             foreach (var cock in cocks)
             {
+                cock.Owner = this;
+
                 this._cocks.Add(cock);
             }
 
-            _cocks = _cocks.OrderByDescending(c => c.Color).ToList();
+            _cocks = _cocks.OrderByDescending(c => c.Size).ToList();
 
             return this;
         }
@@ -44,12 +41,6 @@ namespace Gobblet_Gobblers
         public void RemoveCock(int index)
         {
             _cocks.Remove(_cocks.ElementAt(index));
-        }
-
-
-        public void AddCock(Cock cock)
-        {
-            this.AddCocks(new List<Cock> { cock });
         }
 
         public void Print()

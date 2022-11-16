@@ -5,13 +5,14 @@ namespace Gobblet_Gobblers
 {
     public class Cock : IComparable<Cock>
     {
-        public virtual int Test => 0;
+        public Player? Owner { get; set; }
 
         public Color Color { get; private set; }
 
-        public ISize Size { get; private set; }
+        public Size Size { get; private set; }
 
-        public Cock(Color color, ISize size)
+
+        public Cock(Color color, Size size)
         {
             Color = color;
             Size = size;
@@ -46,7 +47,20 @@ namespace Gobblet_Gobblers
             if (other == null)
                 return 1;
 
-            return this.Size.Number - other.Size.Number;
+            return this.Size.CompareTo(other.Size);
+        }
+
+        public static IEnumerable<Cock> StandardEditionCocks(Color color)
+        {
+            return new List<Cock>
+            {
+                new Cock(color, new Small()),
+                new Cock(color, new Small()),
+                new Cock(color, new Medium()),
+                new Cock(color, new Medium()),
+                new Cock(color, new Large()),
+                new Cock(color, new Large()),
+            };
         }
     }
 }

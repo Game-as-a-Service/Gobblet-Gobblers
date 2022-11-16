@@ -1,9 +1,9 @@
 ﻿namespace Gobblet_Gobblers.Sizes
 {
-    public class Large : ISize
+    public class Large : Size
     {
-        public int Number => 1;
+        public override int Number => 1;
 
-        public string Symbol => "④";
+        public override string Symbol => "④";
     }
 }

@@ -2,11 +2,13 @@
 {
     public class Checkerboard
     {
-        private readonly int checkerboardSize = 3;
+        private readonly int _checkerboardSize = 3;
+
+        private readonly int _playerNumberLimit = 2;
 
         private readonly Stack<Cock>[] _board;
 
-        private readonly Player[] _players;
+        private readonly List<Player> _players = new List<Player>();
 
         private Player _winner;
 
@@ -16,10 +18,9 @@
 
         private readonly Dictionary<int, int[]> _incline = new();
 
-        public Checkerboard(int checkerboardSize, Player[] players)
+        public Checkerboard(int checkerboardSize)
         {
             this._board = InitIalCheckerboard(checkerboardSize);
-            this._players = players;
 
             InitIalWinCondition();
         }
@@ -39,20 +40,37 @@
         private void InitIalWinCondition()
         {
             // 橫
-            for (var i = 0; i < checkerboardSize; i++)
+            for (var i = 0; i < _checkerboardSize; i++)
             {
-                _horizontal[i] = Enumerable.Range(i * checkerboardSize, checkerboardSize).ToArray();
+                _horizontal[i] = Enumerable.Range(i * _checkerboardSize, _checkerboardSize).ToArray();
             }
 
             // 縱
-            for (var i = 0; i < checkerboardSize; i++)
+            for (var i = 0; i < _checkerboardSize; i++)
             {
-                _vertical[i] = Enumerable.Range(i, checkerboardSize).Select(x => i + (x - i) * checkerboardSize).ToArray();
+                _vertical[i] = Enumerable.Range(i, _checkerboardSize).Select(x => i + (x - i) * _checkerboardSize).ToArray();
             }
 
             // 斜
-            _incline[0] = Enumerable.Range(0, checkerboardSize).Select(x => x + x * checkerboardSize).ToArray();
-            _incline[checkerboardSize - 1] = Enumerable.Range(0, checkerboardSize).Select(x => checkerboardSize - x - 1 + x * checkerboardSize).ToArray();
+            _incline[0] = Enumerable.Range(0, _checkerboardSize).Select(x => x + x * _checkerboardSize).ToArray();
+            _incline[_checkerboardSize - 1] = Enumerable.Range(0, _checkerboardSize).Select(x => _checkerboardSize - x - 1 + x * _checkerboardSize).ToArray();
+        }
+
+        public Checkerboard JoinPlayer(Player player)
+        {
+            if (_players.Count == this._playerNumberLimit)
+            {
+                throw new Exception("遊戲已滿");
+            }
+
+            _players.Add(player);
+
+            return this;
+        }
+
+        public void ExitPlayer(Player player)
+        {
+            _players.Remove(player);
         }
 
         public void Start()
@@ -118,14 +136,14 @@
 
         public void Print()
         {
-            var bound = string.Join("\u3000", Enumerable.Range(0, this.checkerboardSize).Select(x => "—"));
+            var bound = string.Join("\u3000", Enumerable.Range(0, this._checkerboardSize).Select(x => "—"));
             Console.WriteLine($"\u3000{bound}\u3000");
 
             for (var i = 0; i < this._board.Length; i++)
             {
                 var cocks = this._board[i];
 
-                if ((i + 1) % this.checkerboardSize == 1)
+                if ((i + 1) % this._checkerboardSize == 1)
                 {
                     Console.Write("｜");
                 }
@@ -137,7 +155,7 @@
 
                 Console.Write("｜");
 
-                if ((i + 1) % this.checkerboardSize == 0)
+                if ((i + 1) % this._checkerboardSize == 0)
                 {
                     Console.WriteLine();
                     Console.WriteLine($"\u3000{bound}\u3000");
@@ -175,15 +193,15 @@
         public bool Gameover(int location)
         {
             var cock = _board[location].Peek();
-            _winner = this._players.First(p => p.Color == cock.Color);
+            _winner = cock.Owner;
 
             // 橫
-            var horizontalIndex = location / checkerboardSize;
+            var horizontalIndex = location / _checkerboardSize;
             if (CheckCondition(_horizontal, horizontalIndex))
                 return true;
 
             // 縱
-            var verticalIndex = location % checkerboardSize;
+            var verticalIndex = location % _checkerboardSize;
             if (CheckCondition(_vertical, verticalIndex))
                 return true;
 

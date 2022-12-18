@@ -1,8 +1,8 @@
-﻿namespace Gobblet_Gobblers
+﻿namespace Gobblet_Gobblers.Shared
 {
     public class Player
     {
-        public string? Name { get; private set; }
+        public string? Name { get; set; }
 
         private ICollection<Cock> _cocks = new List<Cock>();
 

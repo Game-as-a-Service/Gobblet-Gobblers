@@ -8,4 +8,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Gobblet-Gobblers\Shared\Gobblet-Gobblers.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

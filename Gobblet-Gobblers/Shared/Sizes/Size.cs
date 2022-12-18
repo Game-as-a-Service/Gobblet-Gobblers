@@ -1,4 +1,4 @@
-﻿namespace Gobblet_Gobblers.Sizes
+﻿namespace Gobblet_Gobblers.Shared.Sizes
 {
     public abstract class Size : IComparable<Size>
     {

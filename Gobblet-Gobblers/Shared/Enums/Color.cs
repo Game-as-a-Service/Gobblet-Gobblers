@@ -1,4 +1,4 @@
-﻿namespace Gobblet_Gobblers.Enums
+﻿namespace Gobblet_Gobblers.Shared.Enums
 {
     public enum Color
     {

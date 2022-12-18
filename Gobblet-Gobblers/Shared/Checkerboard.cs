@@ -1,4 +1,4 @@
-﻿namespace Gobblet_Gobblers
+﻿namespace Gobblet_Gobblers.Shared
 {
     public class Checkerboard
     {
@@ -8,7 +8,7 @@
 
         private readonly Stack<Cock>[] _board;
 
-        private readonly List<Player> _players = new List<Player>();
+        protected readonly List<Player> _players = new List<Player>();
 
         private Player _winner;
 
@@ -68,70 +68,14 @@
             return this;
         }
 
+        public bool IsFull()
+        {
+            return _players.Count == _playerNumberLimit;
+        }
+
         public void ExitPlayer(Player player)
         {
             _players.Remove(player);
-        }
-
-        public void Start()
-        {
-            Print();
-
-            Process();
-
-            ShowWinner();
-        }
-
-        private void Process()
-        {
-            while (true)
-            {
-                foreach (var player in _players)
-                {
-                    var isNext = false;
-                    var fromIndex = 0;
-                    var toIndex = 0;
-
-                    while (!isNext)
-                    {
-                        Console.WriteLine($"{player.Name} [1]:Place, [2]:Move");
-                        var control = Console.ReadLine();
-
-                        if (control == "1")
-                        {
-                            player.Print();
-                            var cockIndex = int.Parse(Console.ReadLine());
-                            var cock = player.GetCock(cockIndex);
-
-                            Console.WriteLine($"{player.Name} Pacle 0~9 Location");
-                            toIndex = int.Parse(Console.ReadLine());
-
-                            isNext = Place(cock, toIndex);
-
-                            if (isNext)
-                            {
-                                player.RemoveCock(cockIndex);
-                            }
-                        }
-                        else if (control == "2")
-                        {
-                            isNext = Move(fromIndex, toIndex);
-
-                            if (Gameover(fromIndex))
-                            {
-                                return;
-                            }
-                        }
-                    }
-
-                    Print();
-
-                    if (Gameover(toIndex))
-                    {
-                        return;
-                    }
-                }
-            }
         }
 
         public void Print()
@@ -161,6 +105,11 @@
                     Console.WriteLine($"\u3000{bound}\u3000");
                 }
             }
+        }
+
+        public Player GetPlayer(string name)
+        {
+            return _players.FirstOrDefault(p => p.Name == name);
         }
 
         public bool Place(Cock cock, int location)

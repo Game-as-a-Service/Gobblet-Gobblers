@@ -51,11 +51,7 @@ namespace Gobblet_Gobblers
             _checkerboard.JoinPlayer(playersA);
             var actual = playersA.GetCock(0);
 
-            _checkerboard.Place(actual, placeIndex);
-
-            var expected = _checkerboard.GetCock(placeIndex);
-
-            Assert.That(actual, Is.EqualTo(expected));
+            Assert.IsNull(actual);
         }
 
         [Test]
@@ -64,7 +60,7 @@ namespace Gobblet_Gobblers
             var playersA = new Player()
                     .Nameself("Josh");
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => playersA.GetCock(0));
+            Assert.IsNull(playersA.GetCock(0));
         }
     }
 }

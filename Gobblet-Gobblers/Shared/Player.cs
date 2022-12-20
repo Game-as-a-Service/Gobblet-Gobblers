@@ -33,7 +33,7 @@
 
         public Cock GetCock(int index)
         {
-            var cock = _cocks.ElementAt(index);
+            var cock = _cocks.ElementAtOrDefault(index);
 
             return cock;
         }

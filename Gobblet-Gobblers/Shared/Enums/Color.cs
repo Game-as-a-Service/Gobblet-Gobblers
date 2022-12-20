@@ -5,12 +5,12 @@
         /// <summary>
         /// 橘色
         /// </summary>
-        Orange = 1,
+        Orange = 0,
 
         /// <summary>
         /// 藍色
         /// </summary>
-        Blue = 2,
+        Blue = 1,
     }
 
     internal static class ColorExtensions

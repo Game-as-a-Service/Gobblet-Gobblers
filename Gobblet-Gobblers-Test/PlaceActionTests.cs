@@ -1,5 +1,6 @@
-using Gobblet_Gobblers.Enums;
-using Gobblet_Gobblers.Sizes;
+using Gobblet_Gobblers.Shared;
+using Gobblet_Gobblers.Shared.Enums;
+using Gobblet_Gobblers.Shared.Sizes;
 
 namespace Gobblet_Gobblers
 {

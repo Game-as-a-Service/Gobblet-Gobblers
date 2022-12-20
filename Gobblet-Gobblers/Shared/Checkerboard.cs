@@ -46,25 +46,6 @@
             return board;
         }
 
-        //private void InitIalWinCondition()
-        //{
-        //    // 橫
-        //    for (var i = 0; i < _checkerboardSize; i++)
-        //    {
-        //        _horizontal[i] = Enumerable.Range(i * _checkerboardSize, _checkerboardSize).ToArray();
-        //    }
-
-        //    // 縱
-        //    for (var i = 0; i < _checkerboardSize; i++)
-        //    {
-        //        _vertical[i] = Enumerable.Range(i, _checkerboardSize).Select(x => i + (x - i) * _checkerboardSize).ToArray();
-        //    }
-
-        //    // 斜
-        //    _incline[0] = Enumerable.Range(0, _checkerboardSize).Select(x => x + x * _checkerboardSize).ToArray();
-        //    _incline[_checkerboardSize - 1] = Enumerable.Range(0, _checkerboardSize).Select(x => _checkerboardSize - x - 1 + x * _checkerboardSize).ToArray();
-        //}
-
         public Checkerboard JoinPlayer(Player player)
         {
             if (IsFull())
@@ -128,39 +109,57 @@
             {
                 _board[location].Push(cock);
 
+
+                if (c != null)
+                {
+                    var index1 = (int)c.Color;
+                    SetPlayerLine(index1, location, -1);
+                }
+
                 var index = (int)cock.Color;
-                SetPlayerLine(index, location);
+                SetPlayerLine(index, location, 1);
 
                 return true;
             }
 
             return false;
-        }
-
-        public void SetPlayerLine(int playerId, int location)
-        {
-            var x = location / this._checkerboardSize;
-            var y = location % this._checkerboardSize;
-
-            playerLines[playerId][x]++;
-            playerLines[playerId][y + _checkerboardSize]++;
-
-            if (x == y)
-                playerLines[playerId][6]++;
-
-            if (x + y == this._checkerboardSize - 1)
-                playerLines[playerId][7]++;
         }
 
         public bool Move(int fromIndex, int toIndex)
         {
             if (_board[fromIndex].TryPop(out var c) && Place(c, toIndex))
             {
+                var index = (int)c.Color;
+                SetPlayerLine(index, fromIndex, -1);
+                SetPlayerLine(index, toIndex, 1);
+
+                if (_board[fromIndex].TryPeek(out var c1))
+                {
+                    var index1 = (int)c1.Color;
+                    SetPlayerLine(index1, fromIndex, 1);
+                }
+
                 return true;
             }
 
             return false;
         }
+
+        public void SetPlayerLine(int playerId, int location, int diff)
+        {
+            var x = location / this._checkerboardSize;
+            var y = location % this._checkerboardSize;
+
+            playerLines[playerId][x] += diff;
+            playerLines[playerId][y + _checkerboardSize] += diff;
+
+            if (x == y)
+                playerLines[playerId][6] += diff;
+
+            if (x + y == this._checkerboardSize - 1)
+                playerLines[playerId][7] += diff;
+        }
+
 
         public Cock? GetCock(int index)
         {

@@ -67,6 +67,7 @@ public class CheckerboardConsole : Checkerboard
                     }
                     else if (control == "2")
                     {
+                        // TODO: 需要調整
                         isNext = Move(fromIndex, toIndex);
 
                         if (Gameover(fromIndex))

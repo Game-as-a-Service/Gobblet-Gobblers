@@ -1,4 +1,6 @@
-﻿namespace Gobblet_Gobblers.Shared
+﻿using Gobblet_Gobblers.Shared.Enums;
+
+namespace Gobblet_Gobblers.Shared
 {
     public class Checkerboard
     {
@@ -10,31 +12,25 @@
 
         protected readonly List<Player> _players = new List<Player>();
 
+        private readonly int[][] _playerLines; // 垂直:3, 水平:3, 斜線:2
+
         private Player _winner;
 
-        private readonly int[][] playerLines; // 垂直:3, 水平:3, 斜線:2
-
-        public Checkerboard(int checkerboardSize)
+        public Checkerboard(int checkerboardSize = 3)
         {
             // 一定要單數
-            if (_checkerboardSize % 2 == 0)
+            if (checkerboardSize % 2 == 0)
             {
-                // TODO: 錯誤訊息
+                throw new ArgumentException("Checker Board Siz Argument Error");
             }
 
-            _checkerboardSize = checkerboardSize;
+            this._checkerboardSize = checkerboardSize;
 
-            playerLines = new int[_playerNumberLimit][];
-            for (int i = 0; i < playerLines.Length; i++)
-            {
-                playerLines[i] = new int[_checkerboardSize * 2 + 2];
-            }
-
-
-            this._board = InitIalCheckerboard(checkerboardSize);
+            this._board = InitlalCheckerboard(checkerboardSize);
+            this._playerLines = InitlalPlayerLines();
         }
 
-        private Stack<Cock>[] InitIalCheckerboard(int checkerboardSize)
+        private Stack<Cock>[] InitlalCheckerboard(int checkerboardSize)
         {
             var board = new Stack<Cock>[checkerboardSize * checkerboardSize];
 
@@ -46,17 +42,16 @@
             return board;
         }
 
-        public Checkerboard JoinPlayer(Player player)
+        private int[][] InitlalPlayerLines()
         {
-            if (IsFull())
+            var lines = new int[_playerNumberLimit][];
+
+            for (int i = 0; i < lines.Length; i++)
             {
-                // TODO: 錯誤訊息
-                throw new Exception("遊戲已滿");
+                lines[i] = new int[_checkerboardSize * 2 + 2];
             }
 
-            _players.Add(player);
-
-            return this;
+            return lines;
         }
 
         public bool IsFull()
@@ -64,9 +59,34 @@
             return _players.Count == _playerNumberLimit;
         }
 
+        public Checkerboard JoinPlayer(Player player)
+        {
+            if (IsFull())
+            {
+                throw new ArgumentException("Game is full");
+            }
+
+            _players.Add(player);
+
+            return this;
+        }
+
         public void ExitPlayer(Player player)
         {
             _players.Remove(player);
+        }
+
+        public void Start()
+        {
+            if (_players.Count == 2)
+            {
+                _players[0].AddCocks(Cock.StandardEditionCocks(Color.Orange));
+                _players[1].AddCocks(Cock.StandardEditionCocks(Color.Blue));
+            }
+            else
+            {
+                throw new AggregateException("Game is not full");
+            }
         }
 
         public void Print()
@@ -98,9 +118,16 @@
             }
         }
 
-        public Player GetPlayer(string name)
+        public Player GetPlayer(Guid Id)
         {
-            return _players.FirstOrDefault(p => p.Name == name);
+            var player = _players.FirstOrDefault(p => p.Id == Id);
+
+            if (player == default)
+            {
+                throw new ArgumentOutOfRangeException(nameof(Id), "Can not get player");
+            }
+
+            return player;
         }
 
         public bool Place(Cock cock, int location)
@@ -150,14 +177,14 @@
             var x = location / this._checkerboardSize;
             var y = location % this._checkerboardSize;
 
-            playerLines[playerId][x] += diff;
-            playerLines[playerId][y + _checkerboardSize] += diff;
+            _playerLines[playerId][x] += diff;
+            _playerLines[playerId][y + _checkerboardSize] += diff;
 
             if (x == y)
-                playerLines[playerId][6] += diff;
+                _playerLines[playerId][6] += diff;
 
             if (x + y == this._checkerboardSize - 1)
-                playerLines[playerId][7] += diff;
+                _playerLines[playerId][7] += diff;
         }
 
 
@@ -171,7 +198,7 @@
             var cock = _board[location].Peek();
             _winner = cock.Owner;
 
-            return playerLines[0].Any(x => x == _checkerboardSize) || playerLines[1].Any(x => x == _checkerboardSize);
+            return _playerLines[0].Any(x => x == _checkerboardSize) || _playerLines[1].Any(x => x == _checkerboardSize);
         }
 
         public void ShowWinner()

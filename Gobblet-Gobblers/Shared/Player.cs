@@ -2,12 +2,15 @@
 {
     public class Player
     {
-        public string? Name { get; set; }
+        public Guid Id { get; private set; }
+
+        public string? Name { get; private set; }
 
         private ICollection<Cock> _cocks = new List<Cock>();
 
         public Player()
         {
+            this.Id = Guid.NewGuid();
         }
 
         public Player Nameself(string name)
@@ -35,6 +38,11 @@
         {
             var cock = _cocks.ElementAtOrDefault(index);
 
+            if (cock == default)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Can not get Cock");
+            }
+
             return cock;
         }
 
@@ -43,6 +51,7 @@
             _cocks.Remove(_cocks.ElementAt(index));
         }
 
+        // TODO : 拔除
         public void Print()
         {
             for (int i = 0; i < this._cocks.Count; i++)

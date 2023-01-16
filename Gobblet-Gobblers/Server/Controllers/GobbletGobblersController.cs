@@ -1,5 +1,4 @@
-using Gobblet_Gobblers.Shared;
-using Gobblet_Gobblers.Shared.Enums;
+﻿using Gobblet_Gobblers.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gobblet_Gobblers.Server.Controllers
@@ -22,40 +21,43 @@ namespace Gobblet_Gobblers.Server.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public Guid Create(Player player)
+        public Guid Create(string playerName)
         {
+            // 查
+
+            // 改
             var guid = Guid.NewGuid();
-            player = new Player()
-                .Nameself(player.Name)
-                .AddCocks(Cock.StandardEditionCocks(Color.Orange));
+            var player = new Player().Nameself(playerName);
+            var game = new Checkerboard(3).JoinPlayer(player);
 
-            var game = new Checkerboard(3)
-                .JoinPlayer(player);
+            if (!Program._games.TryAdd(guid, game))
+            {
+                // error
+            }
 
-            if (Program._games.TryAdd(guid, game))
-            {
-                return guid;
-            }
-            else
-            {
-                //error
-            }
+            // 存
+
+            // 推
 
             return guid;
         }
 
         [HttpPost]
         [Route("Join/{gameId}")]
-        public Guid Join(Guid gameId, [FromBody] Player player)
+        public Guid Join(Guid gameId, [FromBody] string playerName)
         {
-            if (Program._games.TryGetValue(gameId, out Checkerboard game) && !game.IsFull())
+            if (Program._games.TryGetValue(gameId, out Checkerboard? game) && !game.IsFull())
             {
-                player = new Player()
-                    .Nameself(player.Name)
-                    .AddCocks(Cock.StandardEditionCocks(Color.Blue));
-
+                var player = new Player().Nameself(playerName);
                 game.JoinPlayer(player);
-                game.Print();
+
+                if (game.IsFull())
+                {
+                    game.Start();
+
+                    // TODO:修改成不相依
+                    game.Print();
+                }
             }
             else
             {
@@ -69,10 +71,10 @@ namespace Gobblet_Gobblers.Server.Controllers
         [Route("Place/{gameId}")]
         public Guid Join(Guid gameId, [FromBody] PlaceEvent placeEvent)
         {
-            if (Program._games.TryGetValue(gameId, out Checkerboard game))
+            if (Program._games.TryGetValue(gameId, out Checkerboard? game))
             {
-                var player = game.GetPlayer(placeEvent.Player.Name);
-                var cock = player.GetCock(placeEvent.Index);
+                var player = game.GetPlayer(placeEvent.PlayerId);
+                var cock = player.GetCock(placeEvent.CockIndex);
                 game.Place(cock, placeEvent.Location);
 
                 game.Print();
@@ -89,11 +91,11 @@ namespace Gobblet_Gobblers.Server.Controllers
         [Route("Move/{gameId}")]
         public Guid Move(Guid gameId, [FromBody] PlaceEvent placeEvent)
         {
-            if (Program._games.TryGetValue(gameId, out Checkerboard game))
+            if (Program._games.TryGetValue(gameId, out Checkerboard? game))
             {
                 var player = game.GetPlayer(placeEvent.Player.Name);
-                var cock = player.GetCock(placeEvent.Index);
-                game.Move(placeEvent.Index, placeEvent.Location);
+                var cock = player.GetCock(placeEvent.CockIndex);
+                game.Move(placeEvent.CockIndex, placeEvent.Location);
 
                 game.Print();
             }
@@ -107,9 +109,18 @@ namespace Gobblet_Gobblers.Server.Controllers
 
         public class PlaceEvent
         {
-            public Player Player { get; set; }
+            public Guid PlayerId { get; set; }
 
-            public int Index { get; set; }
+            public int CockIndex { get; set; }
+
+            public int Location { get; set; }
+        }
+
+        public class MoveEvent
+        {
+            public Guid PlayerId { get; set; }
+
+            public int CockIndex { get; set; }
 
             public int Location { get; set; }
         }

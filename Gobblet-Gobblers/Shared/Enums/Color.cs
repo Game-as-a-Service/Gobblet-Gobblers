@@ -15,6 +15,7 @@
 
     internal static class ColorExtensions
     {
+        // TODO : 拔除
         internal static void ToPrint(this Color color, string content)
         {
             var consoleColor = ConsoleColor.Black;

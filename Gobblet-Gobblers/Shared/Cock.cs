@@ -18,6 +18,7 @@ namespace Gobblet_Gobblers.Shared
             Size = size;
         }
 
+        // TODO : 拔除
         public void Print()
         {
             this.Color.ToPrint(this.Size.Symbol);

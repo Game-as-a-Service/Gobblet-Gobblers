@@ -21,7 +21,7 @@ namespace Gobblet_Gobblers.Server.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public Guid Create(string playerName)
+        public Game Create(string playerName)
         {
             // 查
 
@@ -39,16 +39,20 @@ namespace Gobblet_Gobblers.Server.Controllers
 
             // 推
 
-            return guid;
+            return new Game
+            {
+                GameId = guid,
+                Players = game.GetPlayers(),
+            };
         }
 
         [HttpPost]
         [Route("Join/{gameId}")]
-        public Guid Join(Guid gameId, [FromBody] string playerName)
+        public Game Join(Guid gameId, [FromBody] JoinEvent joinEvent)
         {
             if (Program._games.TryGetValue(gameId, out Checkerboard? game) && !game.IsFull())
             {
-                var player = new Player().Nameself(playerName);
+                var player = new Player().Nameself(joinEvent.PlayerName);
                 game.JoinPlayer(player);
 
                 if (game.IsFull())
@@ -64,47 +68,127 @@ namespace Gobblet_Gobblers.Server.Controllers
                 //error
             }
 
-            return gameId;
+            if (game == null)
+                return new Game();
+
+            var gameData = new Game
+            {
+                GameId = gameId,
+                Players = game.GetPlayers(),
+                Cocks = new List<List<Cock>>(),
+            };
+
+            foreach (var player in gameData.Players)
+            {
+                var cocks = player.GetCocks().ToList();
+                cocks = cocks.Select(x => new Cock(x.Color, x.Size)).ToList();
+                gameData.Cocks.Add(cocks);
+            }
+
+            return gameData;
         }
 
         [HttpPost]
         [Route("Place/{gameId}")]
-        public Guid Join(Guid gameId, [FromBody] PlaceEvent placeEvent)
+        public Game Join(Guid gameId, [FromBody] PlaceEvent placeEvent)
         {
+            var isGameOver = false;
             if (Program._games.TryGetValue(gameId, out Checkerboard? game))
             {
                 var player = game.GetPlayer(placeEvent.PlayerId);
                 var cock = player.GetCock(placeEvent.CockIndex);
-                game.Place(cock, placeEvent.Location);
+                var isNext = game.Place(cock, placeEvent.Location);
+
+                if (isNext)
+                {
+                    player.RemoveCock(placeEvent.CockIndex);
+                }
 
                 game.Print();
+
+                isGameOver = game.Gameover(placeEvent.CockIndex);
             }
             else
             {
                 //error
             }
 
-            return gameId;
+            if (game == null)
+                return new Game();
+
+            var gameData = new Game
+            {
+                GameId = gameId,
+                Players = game.GetPlayers(),
+                Cocks = new List<List<Cock>>(),
+                WinnerName = isGameOver ? game.GetWinner().Name : string.Empty
+            };
+
+            foreach (var player in gameData.Players)
+            {
+                var cocks = player.GetCocks().ToList();
+                cocks = cocks.Select(x => new Cock(x.Color, x.Size)).ToList();
+                gameData.Cocks.Add(cocks);
+            }
+
+            return gameData;
         }
 
         [HttpPost]
         [Route("Move/{gameId}")]
-        public Guid Move(Guid gameId, [FromBody] PlaceEvent placeEvent)
+        public Game Move(Guid gameId, [FromBody] MoveEvent moveEvent)
         {
+            var isGameOver = false;
             if (Program._games.TryGetValue(gameId, out Checkerboard? game))
             {
-                var player = game.GetPlayer(placeEvent.PlayerId);
-                var cock = player.GetCock(placeEvent.CockIndex);
-                game.Move(placeEvent.CockIndex, placeEvent.Location);
+                var player = game.GetPlayer(moveEvent.PlayerId);
+                game.Move(moveEvent.FormIndex, moveEvent.ToIndex);
 
                 game.Print();
+
+                isGameOver = game.Gameover(moveEvent.FormIndex);
+                if (!isGameOver)
+                {
+                    game.Gameover(moveEvent.ToIndex);
+                }
             }
             else
             {
                 //error
             }
 
-            return gameId;
+            var gameData = new Game
+            {
+                GameId = gameId,
+                Players = game.GetPlayers(),
+                Cocks = new List<List<Cock>>(),
+                WinnerName = isGameOver ? game.GetWinner().Name : string.Empty
+            };
+
+            foreach (var player in gameData.Players)
+            {
+                var cocks = player.GetCocks().ToList();
+                cocks = cocks.Select(x => new Cock(x.Color, x.Size)).ToList();
+                gameData.Cocks.Add(cocks);
+            }
+
+            return gameData;
+        }
+
+        public class JoinEvent
+        {
+            public string PlayerName { get; set; }
+        }
+
+        public class Game
+        {
+            public Guid GameId { get; set; }
+
+            public List<Player> Players { get; set; }
+
+            public List<List<Cock>> Cocks { get; set; }
+
+            public string WinnerName { get; set; }
         }
 
         public class PlaceEvent

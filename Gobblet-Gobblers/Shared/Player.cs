@@ -34,6 +34,11 @@
             return this;
         }
 
+        public ICollection<Cock> GetCocks()
+        {
+            return _cocks;
+        }
+
         public Cock GetCock(int index)
         {
             var cock = _cocks.ElementAtOrDefault(index);

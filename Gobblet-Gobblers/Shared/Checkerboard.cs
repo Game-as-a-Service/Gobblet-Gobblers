@@ -134,6 +134,11 @@ namespace Gobblet_Gobblers.Shared
             return player;
         }
 
+        public List<Player> GetPlayers()
+        {
+            return this._players;
+        }
+
         public bool Place(Cock cock, int location)
         {
             if (!_board[location].TryPeek(out var c) || c.CompareTo(cock) < 0)
@@ -219,6 +224,11 @@ namespace Gobblet_Gobblers.Shared
             }
 
             return false;
+        }
+
+        public Player GetWinner()
+        {
+            return GetPlayer(_winnerId);
         }
 
         public void ShowWinner()

@@ -67,7 +67,12 @@ public class CheckerboardConsole : Checkerboard
                     }
                     else if (control == "2")
                     {
-                        // TODO: 需要調整
+                        Console.WriteLine($"{player.Name} Move 0~9 From Location");
+                        fromIndex = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine($"{player.Name} Move 0~9 To Location");
+                        toIndex = int.Parse(Console.ReadLine());
+
                         isNext = Move(fromIndex, toIndex);
 
                         if (Gameover(fromIndex))

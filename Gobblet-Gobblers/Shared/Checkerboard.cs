@@ -4,17 +4,21 @@ namespace Gobblet_Gobblers.Shared
 {
     public class Checkerboard
     {
+        private int _round = 0;
+
         private static readonly int _playerNumberLimit = 2;
 
         private readonly int _checkerboardSize = 3;
 
         private readonly Stack<Cock>[] _board;
 
+        private Guid _currentPlayerId => _players.ElementAt(_round % _playerNumberLimit).Id;
+
         protected readonly List<Player> _players = new List<Player>();
 
         private readonly int[][] _playerLines; // 垂直:3, 水平:3, 斜線:2
 
-        private Player _winner;
+        private Guid _winnerId;
 
         public Checkerboard(int checkerboardSize = 3)
         {
@@ -146,6 +150,8 @@ namespace Gobblet_Gobblers.Shared
                 var index = (int)cock.Color;
                 SetPlayerLine(index, location, 1);
 
+                _round++;
+
                 return true;
             }
 
@@ -154,19 +160,24 @@ namespace Gobblet_Gobblers.Shared
 
         public bool Move(int fromIndex, int toIndex)
         {
-            if (_board[fromIndex].TryPop(out var c) && Place(c, toIndex))
+            if (_board[fromIndex].TryPeek(out Cock? temp) && temp?.Owner?.Id == this._currentPlayerId)
             {
-                var index = (int)c.Color;
-                SetPlayerLine(index, fromIndex, -1);
-                SetPlayerLine(index, toIndex, 1);
-
-                if (_board[fromIndex].TryPeek(out var c1))
+                if (_board[fromIndex].TryPop(out Cock? c) && Place(c, toIndex))
                 {
-                    var index1 = (int)c1.Color;
-                    SetPlayerLine(index1, fromIndex, 1);
-                }
+                    var index = (int)temp.Color;
+                    SetPlayerLine(index, fromIndex, -1);
+                    SetPlayerLine(index, toIndex, 1);
 
-                return true;
+                    if (_board[fromIndex].TryPeek(out var c1))
+                    {
+                        var index1 = (int)c1.Color;
+                        SetPlayerLine(index1, fromIndex, 1);
+                    }
+
+                    _round++;
+
+                    return true;
+                }
             }
 
             return false;
@@ -195,15 +206,25 @@ namespace Gobblet_Gobblers.Shared
 
         public bool Gameover(int location)
         {
-            var cock = _board[location].Peek();
-            _winner = cock.Owner;
+            var coock = GetCock(location);
+            if (coock != null && coock.Owner != null)
+            {
+                _winnerId = coock.Owner.Id;
+            }
 
-            return _playerLines[0].Any(x => x == _checkerboardSize) || _playerLines[1].Any(x => x == _checkerboardSize);
+            foreach (var playerLine in _playerLines)
+            {
+                if (playerLine.Any(x => x == _checkerboardSize))
+                    return true;
+            }
+
+            return false;
         }
 
         public void ShowWinner()
         {
-            Console.WriteLine($"Winner:{this._winner.Name}");
+            var winner = GetPlayer(_winnerId);
+            Console.WriteLine($"Winner:{winner.Name}");
         }
     }
 }

@@ -93,7 +93,7 @@ namespace Gobblet_Gobblers.Server.Controllers
         {
             if (Program._games.TryGetValue(gameId, out Checkerboard? game))
             {
-                var player = game.GetPlayer(placeEvent.Player.Name);
+                var player = game.GetPlayer(placeEvent.PlayerId);
                 var cock = player.GetCock(placeEvent.CockIndex);
                 game.Move(placeEvent.CockIndex, placeEvent.Location);
 
@@ -120,9 +120,9 @@ namespace Gobblet_Gobblers.Server.Controllers
         {
             public Guid PlayerId { get; set; }
 
-            public int CockIndex { get; set; }
+            public int FormIndex { get; set; }
 
-            public int Location { get; set; }
+            public int ToIndex { get; set; }
         }
 
         [HttpGet]

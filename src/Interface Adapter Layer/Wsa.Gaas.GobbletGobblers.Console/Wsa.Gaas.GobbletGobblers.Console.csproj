@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Wsa.Gaas.Gobblet_Gobblers.Console</RootNamespace>
+    <RootNamespace>Wsa.Gaas.GobbletGobblers.Console</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Domain Layer\Wsa.Gaas.Gobblet-Gobblers.Domain\Wsa.Gaas.Gobblet-Gobblers.Domain.csproj" />
+    <ProjectReference Include="..\..\Domain Layer\Wsa.Gaas.GobbletGobblers.Domain\Wsa.Gaas.GobbletGobblers.Domain.csproj" />
   </ItemGroup>
 
 </Project>

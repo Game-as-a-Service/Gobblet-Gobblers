@@ -1,4 +1,4 @@
-﻿namespace Wsa.Gaas.Gobblet_Gobblers.Domain.Enums
+﻿namespace Wsa.Gaas.GobbletGobblers.Domain.Enums
 {
     public enum Color
     {

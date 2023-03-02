@@ -1,4 +1,4 @@
-﻿namespace Wsa.Gaas.Gobblet_Gobblers.Domain.Sizes
+﻿namespace Wsa.Gaas.GobbletGobblers.Domain.Sizes
 {
     public class Small : Size
     {

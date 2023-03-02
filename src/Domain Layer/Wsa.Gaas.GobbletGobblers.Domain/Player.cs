@@ -1,4 +1,4 @@
-﻿namespace Wsa.Gaas.Gobblet_Gobblers.Domain
+﻿namespace Wsa.Gaas.GobbletGobblers.Domain
 {
     public class Player
     {

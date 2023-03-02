@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Wsa.Gaas.Gobblet_Gobblers.Domain;
-using Wsa.Gaas.Gobblet_Gobblers.Domain.Enums;
+
+using Wsa.Gaas.GobbletGobblers.Domain;
+using Wsa.Gaas.GobbletGobblers.Domain.Enums;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 

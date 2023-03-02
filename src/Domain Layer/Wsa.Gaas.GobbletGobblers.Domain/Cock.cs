@@ -1,7 +1,7 @@
-﻿using Wsa.Gaas.Gobblet_Gobblers.Domain.Enums;
-using Wsa.Gaas.Gobblet_Gobblers.Domain.Sizes;
+﻿using Wsa.Gaas.GobbletGobblers.Domain.Enums;
+using Wsa.Gaas.GobbletGobblers.Domain.Sizes;
 
-namespace Wsa.Gaas.Gobblet_Gobblers.Domain
+namespace Wsa.Gaas.GobbletGobblers.Domain
 {
     public class Cock : IComparable<Cock>
     {

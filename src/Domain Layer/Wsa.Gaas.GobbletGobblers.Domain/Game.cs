@@ -1,6 +1,6 @@
-﻿using Wsa.Gaas.Gobblet_Gobblers.Domain.Enums;
+﻿using Wsa.Gaas.GobbletGobblers.Domain.Enums;
 
-namespace Wsa.Gaas.Gobblet_Gobblers.Domain
+namespace Wsa.Gaas.GobbletGobblers.Domain
 {
     public class Game
     {
@@ -28,7 +28,7 @@ namespace Wsa.Gaas.Gobblet_Gobblers.Domain
                 throw new ArgumentException("Checker Board Siz Argument Error");
             }
 
-            this._checkerboardSize = checkerboardSize;
+            //this._checkerboardSize = checkerboardSize;
 
             this._board = InitlalCheckerboard(checkerboardSize);
             this._playerLines = InitlalPlayerLines();

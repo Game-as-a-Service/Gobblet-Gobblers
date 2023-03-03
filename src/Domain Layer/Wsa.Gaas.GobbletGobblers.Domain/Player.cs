@@ -4,9 +4,11 @@
     {
         public Guid Id { get; private set; }
 
-        public string? Name { get; private set; }
+        public string Name { get; private set; } = string.Empty;
 
         private ICollection<Cock> _cocks = new List<Cock>();
+
+        private Line _lines;
 
         public Player()
         {
@@ -56,17 +58,14 @@
             _cocks.Remove(_cocks.ElementAt(index));
         }
 
-        // TODO : 拔除
-        public void Print()
+        public void InitLines(int checkerboardSize)
         {
-            for (int i = 0; i < this._cocks.Count; i++)
-            {
-                Console.Write($"[{i}]:");
-                this._cocks.ElementAt(i).Print();
-                Console.Write($" ");
-            }
+            _lines = new Line(checkerboardSize);
+        }
 
-            Console.WriteLine();
+        public Line GetLines()
+        {
+            return _lines;
         }
     }
 }

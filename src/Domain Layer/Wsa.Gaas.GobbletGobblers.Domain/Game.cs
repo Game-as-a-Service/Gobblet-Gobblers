@@ -12,11 +12,7 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         private readonly Stack<Cock>[] _board;
 
-        private Guid _currentPlayerId => _players.ElementAt(_round % _playerNumberLimit).Id;
-
         protected readonly List<Player> _players = new List<Player>();
-
-        private readonly int[][] _playerLines; // 垂直:3, 水平:3, 斜線:2
 
         private Guid _winnerId;
 
@@ -28,10 +24,8 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
                 throw new ArgumentException("Checker Board Siz Argument Error");
             }
 
-            //this._checkerboardSize = checkerboardSize;
-
+            this._checkerboardSize = checkerboardSize;
             this._board = InitlalCheckerboard(checkerboardSize);
-            this._playerLines = InitlalPlayerLines();
         }
 
         private Stack<Cock>[] InitlalCheckerboard(int checkerboardSize)
@@ -44,18 +38,6 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             }
 
             return board;
-        }
-
-        private int[][] InitlalPlayerLines()
-        {
-            var lines = new int[_playerNumberLimit][];
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                lines[i] = new int[_checkerboardSize * 2 + 2];
-            }
-
-            return lines;
         }
 
         public bool IsFull()
@@ -82,10 +64,13 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         public void Start()
         {
-            if (_players.Count == 2)
+            if (_players.Count == _playerNumberLimit)
             {
                 _players[0].AddCocks(Cock.StandardEditionCocks(Color.Orange));
+                _players[0].InitLines(this._checkerboardSize);
+
                 _players[1].AddCocks(Cock.StandardEditionCocks(Color.Blue));
+                _players[1].InitLines(this._checkerboardSize);
             }
             else
             {
@@ -93,34 +78,12 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             }
         }
 
-        public void Print()
-        {
-            var bound = string.Join("\u3000", Enumerable.Range(0, this._checkerboardSize).Select(x => "—"));
-            Console.WriteLine($"\u3000{bound}\u3000");
+        public int CheckerboardSize => this._checkerboardSize;
 
-            for (var i = 0; i < this._board.Length; i++)
-            {
-                var cocks = this._board[i];
+        public Guid CurrentPlayerId => _players.ElementAt(_round % _playerNumberLimit).Id;
 
-                if ((i + 1) % this._checkerboardSize == 1)
-                {
-                    Console.Write("｜");
-                }
 
-                if (cocks.TryPeek(out var cock))
-                    cock.Print();
-                else
-                    Console.Write("\u3000");
-
-                Console.Write("｜");
-
-                if ((i + 1) % this._checkerboardSize == 0)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine($"\u3000{bound}\u3000");
-                }
-            }
-        }
+        public Stack<Cock>[] Board => this._board;
 
         public Player GetPlayer(Guid Id)
         {
@@ -139,88 +102,78 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return this._players;
         }
 
-        public bool Place(Cock cock, int location)
+        public PutCockEvent PutCock(PutCockCommand command)
         {
-            if (!_board[location].TryPeek(out var c) || c.CompareTo(cock) < 0)
+            var domainEvent = new PutCockEvent();
+            var player = GetPlayer(command.PlayerId);
+            var cock = player.GetCock(command.HandCockIndex);
+            var boardIndex = command.Location.X + this.CheckerboardSize * command.Location.Y;
+
+            if (!_board[boardIndex].TryPeek(out var currenctCock) || currenctCock.CompareTo(cock) < 0)
             {
-                _board[location].Push(cock);
+                _board[boardIndex].Push(cock);
 
-
-                if (c != null)
+                if (currenctCock != null)
                 {
-                    var index1 = (int)c.Color;
-                    SetPlayerLine(index1, location, -1);
+                    if (currenctCock.Owner == null)
+                        throw new Exception();
+
+                    currenctCock.Owner
+                        .GetLines().SetLine(command.Location, -1);
                 }
 
-                var index = (int)cock.Color;
-                SetPlayerLine(index, location, 1);
+                player
+                    .GetLines().SetLine(command.Location, 1);
+
+                player.RemoveCock(command.HandCockIndex);
 
                 _round++;
-
-                return true;
             }
 
-            return false;
+            return domainEvent;
         }
 
-        public bool Move(int fromIndex, int toIndex)
-        {
-            if (_board[fromIndex].TryPeek(out Cock? temp) && temp?.Owner?.Id == this._currentPlayerId)
-            {
-                if (_board[fromIndex].TryPop(out Cock? c) && Place(c, toIndex))
-                {
-                    var index = (int)temp.Color;
-                    SetPlayerLine(index, fromIndex, -1);
-                    SetPlayerLine(index, toIndex, 1);
+        //public bool Move(int fromIndex, int toIndex)
+        //{
+        //    if (_board[fromIndex].TryPeek(out Cock? temp) && temp?.Owner?.Id == this._currentPlayerId)
+        //    {
+        //        if (_board[fromIndex].TryPop(out Cock? c) && Place(c, toIndex))
+        //        {
+        //            var index = (int)temp.Color;
+        //            SetPlayerLine(index, fromIndex, -1);
+        //            SetPlayerLine(index, toIndex, 1);
 
-                    if (_board[fromIndex].TryPeek(out var c1))
-                    {
-                        var index1 = (int)c1.Color;
-                        SetPlayerLine(index1, fromIndex, 1);
-                    }
+        //            if (_board[fromIndex].TryPeek(out var c1))
+        //            {
+        //                var index1 = (int)c1.Color;
+        //                SetPlayerLine(index1, fromIndex, 1);
+        //            }
 
-                    _round++;
+        //            _round++;
 
-                    return true;
-                }
-            }
+        //            return true;
+        //        }
+        //    }
 
-            return false;
-        }
-
-        public void SetPlayerLine(int playerId, int location, int diff)
-        {
-            var x = location / this._checkerboardSize;
-            var y = location % this._checkerboardSize;
-
-            _playerLines[playerId][x] += diff;
-            _playerLines[playerId][y + _checkerboardSize] += diff;
-
-            if (x == y)
-                _playerLines[playerId][6] += diff;
-
-            if (x + y == this._checkerboardSize - 1)
-                _playerLines[playerId][7] += diff;
-        }
+        //    return false;
+        //}
 
 
         public Cock? GetCock(int index)
         {
-            return _board[index].TryPeek(out var c) ? c : default(Cock);
+            return _board[index].TryPeek(out var c) ? c : default;
         }
 
-        public bool Gameover(int location)
+        public bool Gameover()
         {
-            var coock = GetCock(location);
-            if (coock != null && coock.Owner != null)
+            foreach (var player in _players)
             {
-                _winnerId = coock.Owner.Id;
-            }
+                if (player.GetLines().IsLine())
+                {
+                    this._winnerId = player.Id;
 
-            foreach (var playerLine in _playerLines)
-            {
-                if (playerLine.Any(x => x == _checkerboardSize))
                     return true;
+                }
             }
 
             return false;
@@ -229,12 +182,6 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
         public Player GetWinner()
         {
             return GetPlayer(_winnerId);
-        }
-
-        public void ShowWinner()
-        {
-            var winner = GetPlayer(_winnerId);
-            Console.WriteLine($"Winner:{winner.Name}");
         }
     }
 }

@@ -6,12 +6,10 @@ using Wsa.Gaas.GobbletGobblers.Domain.Enums;
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 var playerA = new Player()
-    .Nameself("Josh")
-    .AddCocks(Cock.StandardEditionCocks(Color.Orange));
+    .Nameself("Josh");
 
 var playerB = new Player()
-    .Nameself("Tom")
-    .AddCocks(Cock.StandardEditionCocks(Color.Blue));
+    .Nameself("Tom");
 
 var checkerboard = (GameConsole)new GameConsole(3)
     .JoinPlayer(playerA)
@@ -28,68 +26,131 @@ public class GameConsole : Game
 
     public void Start()
     {
-        Print();
+        base.Start();
+
+        ShowCheckBoard(this);
 
         Process();
 
-        ShowWinner();
+        var winner = GetWinner();
+        Console.WriteLine($"Winner:{winner.Name}");
     }
 
     private void Process()
     {
         while (true)
         {
-            foreach (var player in _players)
+            var currentPlayerIndex = base.CurrentPlayerId;
+            var player = base.GetPlayer(currentPlayerIndex);
+
+            Console.WriteLine($"{player.Name} [1]:Place, [2]:Move");
+            var control = Console.ReadLine();
+
+            if (control == "1")
             {
-                var isNext = false;
-                var fromIndex = 0;
-                var toIndex = 0;
+                ShowPlayerCocks(player);
+                var handCockIndex = int.Parse(Console.ReadLine());
 
-                while (!isNext)
-                {
-                    Console.WriteLine($"{player.Name} [1]:Place, [2]:Move");
-                    var control = Console.ReadLine();
+                Console.WriteLine($"{player.Name} Pacle Location X");
+                var x = int.Parse(Console.ReadLine());
 
-                    if (control == "1")
-                    {
-                        player.Print();
-                        var cockIndex = int.Parse(Console.ReadLine());
-                        var cock = player.GetCock(cockIndex);
+                Console.WriteLine($"{player.Name} Pacle Location Y");
+                var y = int.Parse(Console.ReadLine());
 
-                        Console.WriteLine($"{player.Name} Pacle 0~9 Location");
-                        toIndex = int.Parse(Console.ReadLine());
+                var putEvent = PutCock(new PutCockCommand(player.Id, handCockIndex, new Location(x, y)));
+            }
+            else if (control == "2")
+            {
+                //Console.WriteLine($"{player.Name} Move 0~9 From Location");
+                //fromIndex = int.Parse(Console.ReadLine());
 
-                        isNext = Place(cock, toIndex);
+                //Console.WriteLine($"{player.Name} Move 0~9 To Location");
+                //toIndex = int.Parse(Console.ReadLine());
 
-                        if (isNext)
-                        {
-                            player.RemoveCock(cockIndex);
-                        }
-                    }
-                    else if (control == "2")
-                    {
-                        Console.WriteLine($"{player.Name} Move 0~9 From Location");
-                        fromIndex = int.Parse(Console.ReadLine());
+                //isNext = Move(fromIndex, toIndex);
 
-                        Console.WriteLine($"{player.Name} Move 0~9 To Location");
-                        toIndex = int.Parse(Console.ReadLine());
+                //if (Gameover(fromIndex))
+                //{
+                //    return;
+                //}
+            }
 
-                        isNext = Move(fromIndex, toIndex);
 
-                        if (Gameover(fromIndex))
-                        {
-                            return;
-                        }
-                    }
-                }
+            ShowCheckBoard(this);
 
-                Print();
-
-                if (Gameover(toIndex))
-                {
-                    return;
-                }
+            if (Gameover())
+            {
+                return;
             }
         }
+    }
+
+
+    public void ShowCheckBoard(Game game)
+    {
+        var checkerboardSize = game.CheckerboardSize;
+        var board = game.Board;
+
+        var bound = string.Join("\u3000", Enumerable.Range(0, checkerboardSize).Select(x => "—"));
+        Console.WriteLine($"\u3000{bound}\u3000");
+
+        for (var i = 0; i < board.Length; i++)
+        {
+            var cocks = board[i];
+
+            if ((i + 1) % checkerboardSize == 1)
+            {
+                Console.Write("｜");
+            }
+
+            if (cocks.TryPeek(out var cock))
+                ShowCocks(cock);
+            else
+                Console.Write("\u3000");
+
+            Console.Write("｜");
+
+            if ((i + 1) % checkerboardSize == 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"\u3000{bound}\u3000");
+            }
+        }
+    }
+
+
+    private void ShowPlayerCocks(Player player)
+    {
+        var cocks = player.GetCocks();
+        for (int i = 0; i < cocks.Count; i++)
+        {
+            Console.Write($"[{i}]:");
+            ShowCocks(cocks.ElementAt(i));
+            Console.Write($" ");
+        }
+
+        Console.WriteLine();
+    }
+
+    private void ShowCocks(Cock cock)
+    {
+        var consoleColor = ConsoleColor.Black;
+
+        var color = cock.Color;
+        var symbol = cock.Size.Symbol;
+
+        switch (color)
+        {
+            case Color.Orange:
+                consoleColor = ConsoleColor.Red;
+                break;
+            case Color.Blue:
+                consoleColor = ConsoleColor.Blue;
+                break;
+        }
+
+        Console.ForegroundColor = consoleColor;
+        Console.Write(symbol);
+        Console.ResetColor();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Wsa.Gaas.GobbletGobblers.Domain
+﻿using System.Linq;
+
+namespace Wsa.Gaas.GobbletGobblers.Domain
 {
     public class Line
     {

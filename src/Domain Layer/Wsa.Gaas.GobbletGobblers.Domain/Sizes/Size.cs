@@ -1,4 +1,6 @@
-﻿namespace Wsa.Gaas.GobbletGobblers.Domain.Sizes
+﻿using System;
+
+namespace Wsa.Gaas.GobbletGobblers.Domain.Sizes
 {
     public abstract class Size : IComparable<Size>
     {

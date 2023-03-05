@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application Layer", "Applic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface Adapter Layer", "Interface Adapter Layer", "{AAF1DFCF-987C-45B7-8893-79F23BDA51D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Tests", "test\Wsa.Gaas.GobbletGobblers.Tests\Wsa.Gaas.GobbletGobblers.Tests.csproj", "{8FF9EFB3-7B07-47B3-B89B-320EAA46971D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Core.Tests", "test\Wsa.Gaas.GobbletGobblers.Core.Tests\Wsa.Gaas.GobbletGobblers.Core.Tests.csproj", "{8FF9EFB3-7B07-47B3-B89B-320EAA46971D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Domain", "src\Domain Layer\Wsa.Gaas.GobbletGobblers.Domain\Wsa.Gaas.GobbletGobblers.Domain.csproj", "{E0383B9C-23D3-4E3C-8A1A-3A293202CFE0}"
 EndProject
@@ -33,7 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Console", "src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.Console\Wsa.Gaas.GobbletGobblers.Console.csproj", "{9DCD6ADF-5F7E-44B9-947C-C2397F21FB61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wsa.Gaas.GobbletGobblers.Application", "src\Application Layer\Wsa.Gaas.GobbletGobblers.Application\Wsa.Gaas.GobbletGobblers.Application.csproj", "{862831B1-815C-4A06-A87E-8312762E0C93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Application", "src\Application Layer\Wsa.Gaas.GobbletGobblers.Application\Wsa.Gaas.GobbletGobblers.Application.csproj", "{862831B1-815C-4A06-A87E-8312762E0C93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Core.WebApi", "src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.Core.WebApi\Wsa.Gaas.GobbletGobblers.Core.WebApi.csproj", "{B51C5BB8-5E97-42EA-A624-31E804C4AD74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wsa.Gaas.GobbletGobblers.WebApi", "src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.WebApi\Wsa.Gaas.GobbletGobblers.WebApi.csproj", "{0DB8C14F-8939-4149-9125-EA004EDD03BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wsa.Gaas.GobbletGobblers.Tests", "test\Wsa.Gaas.GobbletGobblers.Tests\Wsa.Gaas.GobbletGobblers.Tests.csproj", "{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +87,18 @@ Global
 		{862831B1-815C-4A06-A87E-8312762E0C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{862831B1-815C-4A06-A87E-8312762E0C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{862831B1-815C-4A06-A87E-8312762E0C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +113,9 @@ Global
 		{77F194E0-77E9-4313-9C9B-1D103472A096} = {279F00D6-D6E9-4E39-BCD8-73A55C2E2690}
 		{9DCD6ADF-5F7E-44B9-947C-C2397F21FB61} = {AAF1DFCF-987C-45B7-8893-79F23BDA51D7}
 		{862831B1-815C-4A06-A87E-8312762E0C93} = {972984BB-1B26-4F70-8831-63512BB6B848}
+		{B51C5BB8-5E97-42EA-A624-31E804C4AD74} = {AAF1DFCF-987C-45B7-8893-79F23BDA51D7}
+		{0DB8C14F-8939-4149-9125-EA004EDD03BA} = {AAF1DFCF-987C-45B7-8893-79F23BDA51D7}
+		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356} = {279F00D6-D6E9-4E39-BCD8-73A55C2E2690}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {128ACA84-CAB4-495A-868B-8F11CCFEB869}

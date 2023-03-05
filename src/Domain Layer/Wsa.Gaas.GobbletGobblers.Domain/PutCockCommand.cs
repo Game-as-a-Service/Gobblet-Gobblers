@@ -1,4 +1,6 @@
-﻿namespace Wsa.Gaas.GobbletGobblers.Domain
+﻿using System;
+
+namespace Wsa.Gaas.GobbletGobblers.Domain
 {
     public class PutCockCommand
     {

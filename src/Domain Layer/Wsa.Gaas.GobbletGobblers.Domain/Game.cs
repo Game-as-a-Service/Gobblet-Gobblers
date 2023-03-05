@@ -185,13 +185,16 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
                             this._winnerId = currentCock.Owner.Id;
                     }
 
-                    // 放下奇雞到指定位置
-                    _board[toIndex].Push(fromCock);
-                    _lines.TryGetValue(command.PlayerId, out Line line);
-                    line.SetLine(command.ToLocation, 1);
+                    if (this._winnerId == null)
+                    {
+                        // 放下奇雞到指定位置
+                        _board[toIndex].Push(fromCock);
+                        _lines.TryGetValue(command.PlayerId, out Line line);
+                        line.SetLine(command.ToLocation, 1);
 
-                    if (line.IsLine())
-                        this._winnerId = command.PlayerId;
+                        if (line.IsLine())
+                            this._winnerId = command.PlayerId;
+                    }
 
                     _round++;
                 }

@@ -12,8 +12,6 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         private ICollection<Cock> _cocks = new List<Cock>();
 
-        private Line _lines;
-
         public Player()
         {
             this.Id = Guid.NewGuid();
@@ -40,12 +38,12 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return this;
         }
 
-        public ICollection<Cock> GetCocks()
+        public ICollection<Cock> GetHandAllCock()
         {
             return _cocks;
         }
 
-        public Cock GetCock(int index)
+        public Cock GetHandCock(int index)
         {
             var cock = _cocks.ElementAtOrDefault(index);
 
@@ -57,19 +55,9 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return cock;
         }
 
-        public void RemoveCock(int index)
+        public void RemoveHandCock(int index)
         {
             _cocks.Remove(_cocks.ElementAt(index));
-        }
-
-        public void InitLines(int checkerboardSize)
-        {
-            _lines = new Line(checkerboardSize);
-        }
-
-        public Line GetLines()
-        {
-            return _lines;
         }
     }
 }

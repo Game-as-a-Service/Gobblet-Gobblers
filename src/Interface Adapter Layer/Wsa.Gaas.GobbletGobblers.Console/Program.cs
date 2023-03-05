@@ -51,28 +51,28 @@ public class GameConsole : Game
                 ShowPlayerCocks(player);
                 var handCockIndex = int.Parse(Console.ReadLine());
 
-                Console.WriteLine($"{player.Name} Pacle Location X");
-                var x = int.Parse(Console.ReadLine());
-
-                Console.WriteLine($"{player.Name} Pacle Location Y");
-                var y = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{player.Name} Put Location X Y");
+                var points = Console.ReadLine()?.Split(" ");
+                var x = int.Parse(points[0]);
+                var y = int.Parse(points[1]);
 
                 var putEvent = PutCock(new PutCockCommand(player.Id, handCockIndex, new Location(x, y)));
             }
             else if (control == "2")
             {
-                //Console.WriteLine($"{player.Name} Move 0~9 From Location");
-                //fromIndex = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{player.Name} Move From Location X Y");
+                var fromPoints = Console.ReadLine()?.Split(" ");
+                var fromX = int.Parse(fromPoints[0]);
+                var fromY = int.Parse(fromPoints[1]);
 
-                //Console.WriteLine($"{player.Name} Move 0~9 To Location");
-                //toIndex = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{player.Name} Move To Location X Y");
+                var toPoints = Console.ReadLine()?.Split(" ");
+                var toX = int.Parse(toPoints[0]);
+                var toY = int.Parse(toPoints[1]);
 
-                //isNext = Move(fromIndex, toIndex);
-
-                //if (Gameover(fromIndex))
-                //{
-                //    return;
-                //}
+                var moveEvent = MoveCock(new MoveCockCommand(player.Id,
+                    new Location(fromX, fromY),
+                    new Location(toX, toY)));
             }
 
 
@@ -121,7 +121,7 @@ public class GameConsole : Game
 
     private void ShowPlayerCocks(Player player)
     {
-        var cocks = player.GetCocks();
+        var cocks = player.GetHandAllCock();
         for (int i = 0; i < cocks.Count; i++)
         {
             Console.Write($"[{i}]:");

@@ -17,7 +17,9 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         protected readonly List<Player> _players = new List<Player>();
 
-        private Guid _winnerId;
+        protected readonly Dictionary<Guid, Line> _lines = new Dictionary<Guid, Line>();
+
+        private Guid? _winnerId;
 
         public Game(int checkerboardSize = 3)
         {
@@ -70,10 +72,11 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             if (_players.Count == _playerNumberLimit)
             {
                 _players[0].AddCocks(Cock.StandardEditionCocks(Color.Orange));
-                _players[0].InitLines(this._checkerboardSize);
-
                 _players[1].AddCocks(Cock.StandardEditionCocks(Color.Blue));
-                _players[1].InitLines(this._checkerboardSize);
+
+
+                _lines.Add(_players[0].Id, new Line(this._checkerboardSize));
+                _lines.Add(_players[1].Id, new Line(this._checkerboardSize));
             }
             else
             {
@@ -105,30 +108,44 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return this._players;
         }
 
+        private void CheckPlayerIsAction(Guid playerId)
+        {
+            if (this.CurrentPlayerId != playerId)
+            {
+                throw new ArgumentOutOfRangeException(nameof(playerId), "Is not current action player");
+            }
+        }
+
         public PutCockEvent PutCock(PutCockCommand command)
         {
+            CheckPlayerIsAction(command.PlayerId);
+
             var domainEvent = new PutCockEvent();
             var player = GetPlayer(command.PlayerId);
-            var cock = player.GetCock(command.HandCockIndex);
+            var cock = player.GetHandCock(command.HandCockIndex);
             var boardIndex = command.Location.X + this.CheckerboardSize * command.Location.Y;
 
-            if (!_board[boardIndex].TryPeek(out var currenctCock) || currenctCock.CompareTo(cock) < 0)
+            if (!_board[boardIndex].TryPeek(out var currentCock) || currentCock.CompareTo(cock) < 0)
             {
                 _board[boardIndex].Push(cock);
 
-                if (currenctCock != null)
+                if (currentCock != null)
                 {
-                    if (currenctCock.Owner == null)
+                    if (currentCock.Owner == null)
                         throw new Exception();
 
-                    currenctCock.Owner
-                        .GetLines().SetLine(command.Location, -1);
+                    var currentId = currentCock.Owner.Id;
+                    _lines.TryGetValue(currentId, out Line currentLine);
+                    currentLine.SetLine(command.Location, -1);
                 }
 
-                player
-                    .GetLines().SetLine(command.Location, 1);
+                _lines.TryGetValue(command.PlayerId, out Line line);
+                line.SetLine(command.Location, 1);
 
-                player.RemoveCock(command.HandCockIndex);
+                if (line.IsLine())
+                    this._winnerId = command.PlayerId;
+
+                player.RemoveHandCock(command.HandCockIndex);
 
                 _round++;
             }
@@ -136,30 +153,52 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return domainEvent;
         }
 
-        //public bool Move(int fromIndex, int toIndex)
-        //{
-        //    if (_board[fromIndex].TryPeek(out Cock? temp) && temp?.Owner?.Id == this._currentPlayerId)
-        //    {
-        //        if (_board[fromIndex].TryPop(out Cock? c) && Place(c, toIndex))
-        //        {
-        //            var index = (int)temp.Color;
-        //            SetPlayerLine(index, fromIndex, -1);
-        //            SetPlayerLine(index, toIndex, 1);
+        public MoveCockCockEvent MoveCock(MoveCockCommand command)
+        {
+            CheckPlayerIsAction(command.PlayerId);
 
-        //            if (_board[fromIndex].TryPeek(out var c1))
-        //            {
-        //                var index1 = (int)c1.Color;
-        //                SetPlayerLine(index1, fromIndex, 1);
-        //            }
+            var domainEvent = new MoveCockCockEvent();
+            var fromIndex = command.FromLocation.X + this.CheckerboardSize * command.FromLocation.Y;
+            var toIndex = command.ToLocation.X + this.CheckerboardSize * command.ToLocation.Y;
 
-        //            _round++;
+            if (_board[fromIndex].TryPeek(out var tempfromCock) && tempfromCock.Owner?.Id == command.PlayerId)
+            {
+                if (!_board[toIndex].TryPeek(out var toCock) || toCock.CompareTo(tempfromCock) < 0)
+                {
+                    // 拿起要移動的奇雞
+                    var fromCock = _board[fromIndex].Pop();
+                    _lines.TryGetValue(command.PlayerId, out Line fromLine);
+                    fromLine.SetLine(command.FromLocation, -1);
 
-        //            return true;
-        //        }
-        //    }
 
-        //    return false;
-        //}
+                    // 如果拿起奇雞, 底下有奇雞
+                    if (_board[fromIndex].TryPeek(out var currentCock))
+                    {
+                        if (currentCock.Owner == null)
+                            throw new Exception();
+
+                        var currentId = currentCock.Owner.Id;
+                        _lines.TryGetValue(currentId, out Line currentLine);
+                        currentLine.SetLine(command.FromLocation, 1);
+
+                        if (currentLine.IsLine())
+                            this._winnerId = currentCock.Owner.Id;
+                    }
+
+                    // 放下奇雞到指定位置
+                    _board[toIndex].Push(fromCock);
+                    _lines.TryGetValue(command.PlayerId, out Line line);
+                    line.SetLine(command.ToLocation, 1);
+
+                    if (line.IsLine())
+                        this._winnerId = command.PlayerId;
+
+                    _round++;
+                }
+            }
+
+            return domainEvent;
+        }
 
 
         public Cock? GetCock(int index)
@@ -169,22 +208,12 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         public bool Gameover()
         {
-            foreach (var player in _players)
-            {
-                if (player.GetLines().IsLine())
-                {
-                    this._winnerId = player.Id;
-
-                    return true;
-                }
-            }
-
-            return false;
+            return _winnerId.HasValue;
         }
 
         public Player GetWinner()
         {
-            return GetPlayer(_winnerId);
+            return GetPlayer(_winnerId.Value);
         }
     }
 }

@@ -209,6 +209,14 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return _board[index].TryPeek(out var c) ? c : default;
         }
 
+        public Cock? GetCock(Location location)
+        {
+            var index = location.X + this.CheckerboardSize * location.Y;
+
+            return _board[index].TryPeek(out var c) ? c : default;
+        }
+
+
         public bool Gameover()
         {
             return _winnerId.HasValue;

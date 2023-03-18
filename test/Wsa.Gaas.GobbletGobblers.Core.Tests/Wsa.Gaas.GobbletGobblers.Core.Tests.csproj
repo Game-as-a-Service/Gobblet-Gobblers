@@ -15,10 +15,14 @@
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
-    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Domain Layer\Wsa.Gaas.GobbletGobblers.Domain\Wsa.Gaas.GobbletGobblers.Domain.csproj" />
     <ProjectReference Include="..\..\src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.Core.WebApi\Wsa.Gaas.GobbletGobblers.Core.WebApi.csproj" />
   </ItemGroup>
 </Project>

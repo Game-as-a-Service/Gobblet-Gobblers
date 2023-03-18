@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wsa.Gaas.GobbletGobblers.WebApi", "src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.WebApi\Wsa.Gaas.GobbletGobblers.WebApi.csproj", "{0DB8C14F-8939-4149-9125-EA004EDD03BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wsa.Gaas.GobbletGobblers.Tests", "test\Wsa.Gaas.GobbletGobblers.Tests\Wsa.Gaas.GobbletGobblers.Tests.csproj", "{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Tests", "test\Wsa.Gaas.GobbletGobblers.Tests\Wsa.Gaas.GobbletGobblers.Tests.csproj", "{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

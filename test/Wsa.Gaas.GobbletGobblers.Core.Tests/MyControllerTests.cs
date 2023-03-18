@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-
 namespace Wsa.Gaas.Gobblet_Gobblers.Tests
 {
     [TestFixture]

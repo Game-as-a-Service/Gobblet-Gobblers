@@ -52,29 +52,46 @@ public class GameConsole : Game
                 var handCockIndex = int.Parse(Console.ReadLine());
 
                 Console.WriteLine($"{player.Name} Put Location X Y");
-                var points = Console.ReadLine()?.Split(" ");
-                var x = int.Parse(points[0]);
-                var y = int.Parse(points[1]);
+                var points = Console.ReadLine()?.Split(" ").Select(int.Parse).ToArray();
+                if (points?.Count() != 2)
+                {
+                    Console.WriteLine("Error Action");
+                    continue;
+                }
+
+                var x = points[0];
+                var y = points[1];
 
                 var putEvent = PutCock(new PutCockCommand(player.Id, handCockIndex, new Location(x, y)));
             }
             else if (control == "2")
             {
                 Console.WriteLine($"{player.Name} Move From Location X Y");
-                var fromPoints = Console.ReadLine()?.Split(" ");
-                var fromX = int.Parse(fromPoints[0]);
-                var fromY = int.Parse(fromPoints[1]);
+                var fromPoints = Console.ReadLine()?.Split(" ").Select(int.Parse).ToArray();
+                if (fromPoints?.Count() != 2)
+                {
+                    Console.WriteLine("Error Action");
+                    continue;
+                }
+
+                var fromX = fromPoints[0];
+                var fromY = fromPoints[1];
 
                 Console.WriteLine($"{player.Name} Move To Location X Y");
-                var toPoints = Console.ReadLine()?.Split(" ");
-                var toX = int.Parse(toPoints[0]);
-                var toY = int.Parse(toPoints[1]);
+                var toPoints = Console.ReadLine()?.Split(" ").Select(int.Parse).ToArray();
+                if (toPoints?.Count() != 2)
+                {
+                    Console.WriteLine("Error Action");
+                    continue;
+                }
+
+                var toX = toPoints[0];
+                var toY = toPoints[1];
 
                 var moveEvent = MoveCock(new MoveCockCommand(player.Id,
                     new Location(fromX, fromY),
                     new Location(toX, toY)));
             }
-
 
             ShowCheckBoard(this);
 

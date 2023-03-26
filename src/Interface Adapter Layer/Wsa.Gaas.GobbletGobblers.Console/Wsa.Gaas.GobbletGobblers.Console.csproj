@@ -6,6 +6,7 @@
     <RootNamespace>Wsa.Gaas.GobbletGobblers.Console</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
 
   <ItemGroup>

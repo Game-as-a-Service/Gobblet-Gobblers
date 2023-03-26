@@ -24,7 +24,7 @@ public class GameConsole : Game
     {
     }
 
-    public void Start()
+    public new void Start()
     {
         base.Start();
 
@@ -49,7 +49,15 @@ public class GameConsole : Game
             if (control == "1")
             {
                 ShowPlayerCocks(player);
-                var handCockIndex = int.Parse(Console.ReadLine());
+
+                if (int.TryParse(Console.ReadLine() ?? "-1", out var handCockIndex))
+                {
+                    // 轉換成功，可以在這裡使用 handCockIndex 變量
+                }
+                else
+                {
+                    // 轉換失敗，進行錯誤處理
+                }
 
                 Console.WriteLine($"{player.Name} Put Location X Y");
                 var points = Console.ReadLine()?.Split(" ").Select(int.Parse).ToArray();

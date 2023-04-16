@@ -20,25 +20,6 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             Size = size;
         }
 
-        public int Compare(Cock? x, Cock? y)
-        {
-            if (x == null)
-                return -1;
-
-            if (y == null)
-                return 1;
-
-            return x.Size.Number - y.Size.Number;
-        }
-
-        public bool EqualsColor(Cock? other)
-        {
-            if (other == null)
-                return false;
-
-            return this.Color == other.Color;
-        }
-
         public int CompareTo(Cock? other)
         {
             if (other == null)

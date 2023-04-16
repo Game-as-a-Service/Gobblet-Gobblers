@@ -149,6 +149,10 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
                 _round++;
             }
+            else
+            {
+                throw new ArgumentOutOfRangeException("Illegal put cock");
+            }
 
             return domainEvent;
         }
@@ -198,15 +202,17 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
                     _round++;
                 }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Illegal move cock");
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("Illegal move cock");
             }
 
             return domainEvent;
-        }
-
-
-        public Cock? GetCock(int index)
-        {
-            return _board[index].TryPeek(out var c) ? c : default;
         }
 
         public Cock? GetCock(Location location)
@@ -224,7 +230,7 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         public Player GetWinner()
         {
-            return GetPlayer(_winnerId.Value);
+            return GetPlayer(_winnerId!.Value);
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 namespace Wsa.Gaas.Gobblet_Gobblers.Tests
 {
     [TestFixture]
-    public class MyControllerTests
+    public class FinishGameTests
         : WebApplicationFactory<Program>
     {
         private HttpClient _client;

@@ -17,7 +17,6 @@ var checkerboard = (GameConsole)new GameConsole(3)
 
 checkerboard.Start();
 
-
 public class GameConsole : Game
 {
     public GameConsole(int checkerboardSize) : base(checkerboardSize)

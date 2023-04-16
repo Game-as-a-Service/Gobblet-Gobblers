@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wsa.Gaas.GobbletGobblers.Domain.Commands;
 using Wsa.Gaas.GobbletGobblers.Domain.Enums;
+using Wsa.Gaas.GobbletGobblers.Domain.Events;
 
 namespace Wsa.Gaas.GobbletGobblers.Domain
 {
@@ -103,9 +105,19 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return player;
         }
 
+        public Stack<Cock>[] GetBoard()
+        {
+            return this._board;
+        }
+
         public List<Player> GetPlayers()
         {
             return this._players;
+        }
+
+        public Dictionary<Guid, Line> GetLines()
+        {
+            return this._lines;
         }
 
         private void CheckPlayerIsAction(Guid playerId)

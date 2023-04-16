@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wsa.Gaas.GobbletGobblers.Domain
+namespace Wsa.Gaas.GobbletGobblers.Domain.Commands
 {
     public class MoveCockCommand
     {

@@ -1,4 +1,5 @@
 ﻿using Wsa.Gaas.GobbletGobblers.Domain;
+using Wsa.Gaas.GobbletGobblers.Domain.Commands;
 
 namespace Wsa.Gaas.Gobblet_Gobblers.Tests
 {

@@ -1,25 +1,21 @@
 ﻿using Wsa.Gaas.GobbletGobblers.Application.Interfaces;
-using Wsa.Gaas.GobbletGobblers.Domain;
+using Wsa.Gaas.GobbletGobblers.Domain.Commands;
 
 namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
 {
-    public class CreateGameUseCase
+    public class MoveCockUseCase
     {
-        public async Task<GameModel> ExecuteAsync(CreateGameRequest request, IRepository repository)
+        public async Task<GameModel> ExecuteAsync(MoveCockRequest request, IRepository repository)
         {
-            var gameId = Guid.NewGuid();
-
             // 查
-            var game = repository.Find(gameId);
+            var game = repository.Find(request.Id);
 
-            if (game != null)
+            if (game == null)
                 throw new Exception();
-            // 改
-            var player = new Player();
-            player.Nameself(request.PlayerName);
 
-            game = new Game();
-            game.JoinPlayer(player);
+            // 改
+            var command = new MoveCockCommand(request.PlayerId, request.From, request.To);
+            game.MoveCock(command);
 
             // 存
             var players = game.GetPlayers().Select(x => new PlayerModel
@@ -31,13 +27,13 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
 
             var gameModel = new GameModel
             {
-                Id = gameId,
+                Id = request.Id,
                 Board = game.GetBoard(),
                 Players = players,
                 Lines = game.GetLines(),
             };
 
-            repository.Add(gameId, game);
+            repository.Update(request.Id, game);
 
             // 推
 

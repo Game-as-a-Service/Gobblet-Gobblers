@@ -27,11 +27,11 @@ namespace Wsa.Gaas.GobbletGobblers.Core.WebApi
             return result;
         }
 
-        public Game Find(Guid gameid)
+        public Game Find(Guid gameId)
         {
             var result = default(Game);
 
-            if (_memoryCache.TryGetValue(gameid, out var game))
+            if (_memoryCache.TryGetValue(gameId, out var game))
             {
                 result = (Game)game;
             }

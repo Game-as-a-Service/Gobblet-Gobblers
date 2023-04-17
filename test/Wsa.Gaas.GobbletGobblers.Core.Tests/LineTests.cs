@@ -6,167 +6,126 @@ namespace Wsa.Gaas.Gobblet_Gobblers.Tests
     [TestFixture]
     public class LineTests
     {
+        private Game _game;
+        private Player _playerA;
+        private Player _playerB;
         [SetUp]
         public void Setup()
         {
+            _game = new Game();
+            _playerA = new Player().Nameself("Josh");
+            _playerB = new Player().Nameself("Tom");
+            _game.JoinPlayer(_playerA)
+                .JoinPlayer(_playerB);
+            _game.Start();
         }
 
         [Test]
         public void PlayerA_HorizontalLine()
         {
-            var game = new Game();
-
-            var playerA = new Player()
-                .Nameself("Josh");
-
-            var playerB = new Player()
-                .Nameself("Tom");
-
             // Given:
-            // 玩家A, 玩家B
-            game.JoinPlayer(playerA)
-                .JoinPlayer(playerB);
+            var commandStep1 = new PutCockCommand(_playerA.Id, 0, new Location(1, 0));
+            _game.PutCock(commandStep1);
 
-            game.Start();
+            var commandStep2 = new PutCockCommand(_playerB.Id, 0, new Location(0, 0));
+            _game.PutCock(commandStep2);
+
+            var commandStep3 = new PutCockCommand(_playerA.Id, 0, new Location(1, 1));
+            _game.PutCock(commandStep3);
+
+            var commandStep4 = new PutCockCommand(_playerB.Id, 0, new Location(0, 1));
+            _game.PutCock(commandStep4);
 
             // When:
             // 玩家A 放置 中奇雞 至 棋盤(2, 0) 位置
-            var commandSetp1 = new PutCockCommand(playerA.Id, 0, new Location(1, 0));
-            game.PutCock(commandSetp1);
+           
 
-            var commandSetp2 = new PutCockCommand(playerB.Id, 0, new Location(0, 0));
-            game.PutCock(commandSetp2);
-
-            var commandSetp3 = new PutCockCommand(playerA.Id, 0, new Location(1, 1));
-            game.PutCock(commandSetp3);
-
-            var commandSetp4 = new PutCockCommand(playerB.Id, 0, new Location(0, 1));
-            game.PutCock(commandSetp4);
-
-            var commandSetp5 = new PutCockCommand(playerA.Id, 0, new Location(1, 2));
-            game.PutCock(commandSetp5);
+            var commandStep5 = new PutCockCommand(_playerA.Id, 0, new Location(1, 2));
+            _game.PutCock(commandStep5);
 
             // Then:
             // 玩家A的 中奇雞 放置至 棋盤(1, 1)
-            Assert.That(game.Gameover(), Is.True);
-            Assert.That(game.GetWinner(), Is.EqualTo(playerA));
+            Assert.That(_game.Gameover(), Is.True);
+            Assert.That(_game.GetWinner(), Is.EqualTo(_playerA));
         }
 
         [Test]
         public void PlayerA_VerticalLine()
         {
-            var game = new Game();
-
-            var playerA = new Player()
-                .Nameself("Josh");
-
-            var playerB = new Player()
-                .Nameself("Tom");
-
             // Given:
-            // 玩家A, 玩家B
-            game.JoinPlayer(playerA)
-                .JoinPlayer(playerB);
+            var commandStep1 = new PutCockCommand(_playerA.Id, 0, new Location(0, 0));
+            _game.PutCock(commandStep1);
 
-            game.Start();
+            var commandStep2 = new PutCockCommand(_playerB.Id, 0, new Location(0, 1));
+            _game.PutCock(commandStep2);
+
+            var commandStep3 = new PutCockCommand(_playerA.Id, 0, new Location(1, 0));
+            _game.PutCock(commandStep3);
+
+            var commandStep4 = new PutCockCommand(_playerB.Id, 0, new Location(0, 2));
+            _game.PutCock(commandStep4);
 
             // When:
             // 玩家A 放置 中奇雞 至 棋盤(2, 0) 位置
-            var commandSetp1 = new PutCockCommand(playerA.Id, 0, new Location(0, 0));
-            game.PutCock(commandSetp1);
-
-            var commandSetp2 = new PutCockCommand(playerB.Id, 0, new Location(0, 1));
-            game.PutCock(commandSetp2);
-
-            var commandSetp3 = new PutCockCommand(playerA.Id, 0, new Location(1, 0));
-            game.PutCock(commandSetp3);
-
-            var commandSetp4 = new PutCockCommand(playerB.Id, 0, new Location(0, 2));
-            game.PutCock(commandSetp4);
-
-            var commandSetp5 = new PutCockCommand(playerA.Id, 0, new Location(2, 0));
-            game.PutCock(commandSetp5);
+            
+            var commandStep5 = new PutCockCommand(_playerA.Id, 0, new Location(2, 0));
+            _game.PutCock(commandStep5);
 
             // Then:
             // 玩家A的 中奇雞 放置至 棋盤(1, 1)
-            Assert.That(game.Gameover(), Is.True);
-            Assert.That(game.GetWinner(), Is.EqualTo(playerA));
+            Assert.That(_game.Gameover(), Is.True);
+            Assert.That(_game.GetWinner(), Is.EqualTo(_playerA));
         }
 
         [Test]
         public void PlayerA_SlashLine()
         {
-            var game = new Game();
-
-            var playerA = new Player()
-                .Nameself("Josh");
-
-            var playerB = new Player()
-                .Nameself("Tom");
-
+          
             // Given:
             // 玩家A, 玩家B
-            game.JoinPlayer(playerA)
-                .JoinPlayer(playerB);
+            var commandStep1 = new PutCockCommand(_playerA.Id, 0, new Location(0, 0));
+            _game.PutCock(commandStep1);
 
-            game.Start();
+            var commandStep2 = new PutCockCommand(_playerB.Id, 0, new Location(0, 1));
+            _game.PutCock(commandStep2);
 
+
+            var commandStep3 = new PutCockCommand(_playerA.Id, 0, new Location(1, 1));
+            _game.PutCock(commandStep3);
+
+            var commandStep4 = new PutCockCommand(_playerB.Id, 0, new Location(0, 2));
+            _game.PutCock(commandStep4);
             // When:
             // 玩家A 放置 中奇雞 至 棋盤(2, 0) 位置
-            var commandSetp1 = new PutCockCommand(playerA.Id, 0, new Location(0, 0));
-            game.PutCock(commandSetp1);
-
-            var commandSetp2 = new PutCockCommand(playerB.Id, 0, new Location(0, 1));
-            game.PutCock(commandSetp2);
-
-
-            var commandSetp3 = new PutCockCommand(playerA.Id, 0, new Location(1, 1));
-            game.PutCock(commandSetp3);
-
-            var commandSetp4 = new PutCockCommand(playerB.Id, 0, new Location(0, 2));
-            game.PutCock(commandSetp4);
-
-            var commandSetp5 = new PutCockCommand(playerA.Id, 0, new Location(2, 2));
-            game.PutCock(commandSetp5);
+            
+            var commandStep5 = new PutCockCommand(_playerA.Id, 0, new Location(2, 2));
+            _game.PutCock(commandStep5);
 
             // Then:
             // 玩家A的 中奇雞 放置至 棋盤(1, 1)
-            Assert.That(game.Gameover(), Is.True);
-            Assert.That(game.GetWinner(), Is.EqualTo(playerA));
+            Assert.That(_game.Gameover(), Is.True);
+            Assert.That(_game.GetWinner(), Is.EqualTo(_playerA));
         }
 
         [Test]
         public void PlayerA_NotLine()
         {
-            var game = new Game();
-
-            var playerA = new Player()
-                .Nameself("Josh");
-
-            var playerB = new Player()
-                .Nameself("Tom");
-
+           
             // Given:
-            // 玩家A, 玩家B
-            game.JoinPlayer(playerA)
-                .JoinPlayer(playerB);
+            var commandStep1 = new PutCockCommand(_playerA.Id, 0, new Location(0, 0));
+            _game.PutCock(commandStep1);
 
-            game.Start();
-
+            var commandStep2 = new PutCockCommand(_playerB.Id, 0, new Location(1, 1));
+            _game.PutCock(commandStep2);
+            
             // When:
             // 玩家A 放置 中奇雞 至 棋盤(2, 0) 位置
-            var commandSetp1 = new PutCockCommand(playerA.Id, 0, new Location(0, 0));
-            game.PutCock(commandSetp1);
-
-            var commandSetp2 = new PutCockCommand(playerB.Id, 0, new Location(1, 1));
-            game.PutCock(commandSetp2);
-
-            var commandSetp3 = new PutCockCommand(playerA.Id, 0, new Location(2, 2));
-            game.PutCock(commandSetp3);
+            var commandStep3 = new PutCockCommand(_playerA.Id, 0, new Location(2, 2));
+            _game.PutCock(commandStep3);
 
             // Then:
             // 玩家A的 中奇雞 放置至 棋盤(1, 1)
-            Assert.That(game.Gameover(), Is.False);
+            Assert.That(_game.Gameover(), Is.False);
         }
     }
 }

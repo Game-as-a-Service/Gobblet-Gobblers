@@ -14,6 +14,7 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
 
             if (game != null)
                 throw new Exception();
+
             // 改
             var player = new Player();
             player.Nameself(request.PlayerName);
@@ -22,7 +23,7 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
             game.JoinPlayer(player);
 
             // 存
-            var players = game.GetPlayers().Select(x => new PlayerModel
+            var players = game.Players.Select(x => new PlayerModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -32,9 +33,9 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
             var gameModel = new GameModel
             {
                 Id = gameId,
-                Board = game.GetBoard(),
+                Board = game.Board,
                 Players = players,
-                Lines = game.GetLines(),
+                Lines = game.Lines,
             };
 
             repository.Add(gameId, game);

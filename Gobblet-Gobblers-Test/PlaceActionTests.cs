@@ -23,7 +23,7 @@ namespace Gobblet_Gobblers
         /// 
         /// </summary>
         [Test]
-        public void PlacedSucess()
+        public void PlacedSuccess()
         {
             var placeIndex = 4;
             var cocks = new List<Cock> { new Cock(Color.Blue, new Small()) };
@@ -55,7 +55,7 @@ namespace Gobblet_Gobblers
         }
 
         [Test]
-        public void PlacedSucess1()
+        public void PlacedSuccess1()
         {
             var playersA = new Player()
                     .Nameself("Josh");

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Wsa.Gaas.GobbletGobblers.Domain.Events
 {
-    public class CeateGameEvent
+    public class CreateGameEvent
     {
         public Guid GameId { get; set; }
 

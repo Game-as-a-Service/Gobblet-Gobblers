@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Wsa.Gaas.GobbletGobblers.Application;
 using Wsa.Gaas.GobbletGobblers.Application.Interfaces;
 using Wsa.Gaas.GobbletGobblers.Application.UseCases;
+using Wsa.Gaas.GobbletGobblers.Domain;
+using Wsa.Gaas.GobbletGobblers.Domain.Enums;
 
 namespace Wsa.Gaas.GobbletGobblers.WebApi.Controllers
 {
@@ -37,14 +39,77 @@ namespace Wsa.Gaas.GobbletGobblers.WebApi.Controllers
         [Route("PutCock")]
         public async Task<GameModel> PutCockAsync(PutCockRequest request)
         {
-            return await new PutCockUseCase().ExecuteAsync(request, _repository);
+            var game = await new PutCockUseCase().ExecuteAsync(request, _repository);
+
+            //_logger.LogInformation($"{game.Players.FirstOrDefault(x => x.Id == request.PlayerId)?.Name} Put Cock Success");
+
+            ShowCheckBoard(game.BoardSize, game.Board);
+
+            return game;
         }
 
         [HttpPost]
         [Route("MoveCock")]
         public async Task<GameModel> MoveCockAsync(MoveCockRequest request)
         {
-            return await new MoveCockUseCase().ExecuteAsync(request, _repository);
+            var game = await new MoveCockUseCase().ExecuteAsync(request, _repository);
+
+            //_logger.LogInformation($"{game.Players.FirstOrDefault(x => x.Id == request.PlayerId)?.Name} Move Cock Success");
+
+            ShowCheckBoard(game.BoardSize, game.Board);
+
+            return game;
+        }
+
+        public void ShowCheckBoard(int checkerboardSize, Stack<Cock>[] board)
+        {
+            var bound = string.Join("\u3000", Enumerable.Range(0, checkerboardSize).Select(x => "¡X"));
+            Console.WriteLine($"\u3000{bound}\u3000");
+
+            for (var i = 0; i < board.Length; i++)
+            {
+                var cocks = board[i];
+
+                if ((i + 1) % checkerboardSize == 1)
+                {
+                    Console.Write("¡U");
+                }
+
+                if (cocks.TryPeek(out var cock))
+                    ShowCocks(cock);
+                else
+                    Console.Write("\u3000");
+
+                Console.Write("¡U");
+
+                if ((i + 1) % checkerboardSize == 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"\u3000{bound}\u3000");
+                }
+            }
+        }
+
+        private void ShowCocks(Cock cock)
+        {
+            var consoleColor = ConsoleColor.Black;
+
+            var color = cock.Color;
+            var symbol = cock.Size.Symbol;
+
+            switch (color)
+            {
+                case Color.Orange:
+                    consoleColor = ConsoleColor.Red;
+                    break;
+                case Color.Blue:
+                    consoleColor = ConsoleColor.Blue;
+                    break;
+            }
+
+            Console.ForegroundColor = consoleColor;
+            Console.Write(symbol);
+            Console.ResetColor();
         }
     }
 }

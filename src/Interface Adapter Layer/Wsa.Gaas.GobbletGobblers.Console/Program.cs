@@ -143,7 +143,6 @@ public class GameConsole : Game
         }
     }
 
-
     private void ShowPlayerCocks(Player player)
     {
         var cocks = player.GetHandAllCock();

@@ -28,6 +28,7 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
             var gameModel = new GameModel
             {
                 Id = request.Id,
+                BoardSize = game.CheckerboardSize,
                 Board = game.Board,
                 Players = players,
                 Lines = game.Lines,

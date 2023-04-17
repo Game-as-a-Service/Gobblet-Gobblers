@@ -18,7 +18,7 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
             game.PutCock(command);
 
             // 存
-            var players = game.GetPlayers().Select(x => new PlayerModel
+            var players = game.Players.Select(x => new PlayerModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -28,9 +28,9 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
             var gameModel = new GameModel
             {
                 Id = request.Id,
-                Board = game.GetBoard(),
+                Board = game.Board,
                 Players = players,
-                Lines = game.GetLines(),
+                Lines = game.Lines,
             };
 
             repository.Update(request.Id, game);

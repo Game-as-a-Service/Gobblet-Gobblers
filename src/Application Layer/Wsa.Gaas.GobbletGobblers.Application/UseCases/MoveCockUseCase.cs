@@ -28,7 +28,7 @@ namespace Wsa.Gaas.GobbletGobblers.Application.UseCases
             var gameModel = new GameModel
             {
                 Id = request.Id,
-                Board = game.GetBoard(),
+                Board = game.Board,
                 Players = players,
                 Lines = game.GetLines(),
             };

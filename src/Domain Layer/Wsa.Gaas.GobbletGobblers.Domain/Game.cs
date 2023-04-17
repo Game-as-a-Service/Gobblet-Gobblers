@@ -93,6 +93,8 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
 
         public Stack<Cock>[] Board => this._board;
 
+        public List<Player> Players => this._players;
+
         public Player GetPlayer(Guid Id)
         {
             var player = _players.FirstOrDefault(p => p.Id == Id);
@@ -105,20 +107,7 @@ namespace Wsa.Gaas.GobbletGobblers.Domain
             return player;
         }
 
-        public Stack<Cock>[] GetBoard()
-        {
-            return this._board;
-        }
-
-        public List<Player> GetPlayers()
-        {
-            return this._players;
-        }
-
-        public Dictionary<Guid, Line> GetLines()
-        {
-            return this._lines;
-        }
+        public Dictionary<Guid, Line> Lines => this._lines;
 
         private void CheckPlayerIsAction(Guid playerId)
         {

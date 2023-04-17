@@ -7,16 +7,21 @@ namespace Wsa.Gaas.Gobblet_Gobblers.Tests
     public class MoveCockTests
     {
         private Game _game;
+
         private Player _playerA;
+
         private Player _playerB;
+
         [SetUp]
         public void Setup()
         {
             _game = new Game();
             _playerA = new Player().Nameself("Josh");
             _playerB = new Player().Nameself("Tom");
+
             _game.JoinPlayer(_playerA)
                 .JoinPlayer(_playerB);
+
             _game.Start();
         }
 

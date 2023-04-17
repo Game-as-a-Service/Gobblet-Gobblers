@@ -63,7 +63,7 @@ namespace Wsa.Gaas.Gobblet_Gobblers.Tests
 
             Assert.That(joinGameResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
-            var putCockJson = JsonConvert.SerializeObject(new PutCockRequest
+            var putCockJsonStep1 = JsonConvert.SerializeObject(new PutCockRequest
             {
                 Id = gameId,
                 PlayerId = Guid.Parse(player1Id),
@@ -71,14 +71,49 @@ namespace Wsa.Gaas.Gobblet_Gobblers.Tests
                 Location = new Location(1, 1),
             });
 
-            var putCockContent = new StringContent(putCockJson, Encoding.UTF8, "application/json");
+            var putCockContentStep1 = new StringContent(putCockJsonStep1, Encoding.UTF8, "application/json");
 
-            var putCockRequest = new HttpRequestMessage(HttpMethod.Post, "Game/PutCock");
-            putCockRequest.Content = putCockContent;
+            var putCockRequestStep1 = new HttpRequestMessage(HttpMethod.Post, "Game/PutCock");
+            putCockRequestStep1.Content = putCockContentStep1;
 
-            var putCockResponse = await _client.SendAsync(putCockRequest);
+            var putCockResponseStep1 = await _client.SendAsync(putCockRequestStep1);
 
-            Assert.That(putCockResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(putCockResponseStep1.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+
+            var putCockJsonStep2 = JsonConvert.SerializeObject(new PutCockRequest
+            {
+                Id = gameId,
+                PlayerId = Guid.Parse(player2Id),
+                HandCockIndex = 0,
+                Location = new Location(2, 2),
+            });
+
+            var putCockContentStep2 = new StringContent(putCockJsonStep2, Encoding.UTF8, "application/json");
+
+            var putCockRequestStep2 = new HttpRequestMessage(HttpMethod.Post, "Game/PutCock");
+            putCockRequestStep2.Content = putCockContentStep2;
+
+            var putCockResponseStep2 = await _client.SendAsync(putCockRequestStep2);
+
+            Assert.That(putCockResponseStep2.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            var moveCockJsonStep1 = JsonConvert.SerializeObject(new MoveCockRequest
+            {
+                Id = gameId,
+                PlayerId = Guid.Parse(player1Id),
+                From = new Location(1, 1),
+                To = new Location(0, 0),
+            });
+
+            var moveCockContentStep1 = new StringContent(moveCockJsonStep1, Encoding.UTF8, "application/json");
+
+            var moveCockRequestStep1 = new HttpRequestMessage(HttpMethod.Post, "Game/MoveCock");
+            moveCockRequestStep1.Content = moveCockContentStep1;
+
+            var moveCockResponseStep1 = await _client.SendAsync(moveCockRequestStep1);
+
+            Assert.That(moveCockResponseStep1.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
     }
 }

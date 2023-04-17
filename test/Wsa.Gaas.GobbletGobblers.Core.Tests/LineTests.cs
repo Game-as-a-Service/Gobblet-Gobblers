@@ -98,8 +98,8 @@ namespace Wsa.Gaas.Gobblet_Gobblers.Tests
             // When:
             // 玩家A 放置 中奇雞 至 棋盤(2, 0) 位置
             
-            var commandSetp5 = new PutCockCommand(_playerA.Id, 0, new Location(2, 2));
-            _game.PutCock(commandSetp5);
+            var commandStep5 = new PutCockCommand(_playerA.Id, 0, new Location(2, 2));
+            _game.PutCock(commandStep5);
 
             // Then:
             // 玩家A的 中奇雞 放置至 棋盤(1, 1)

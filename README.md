@@ -49,3 +49,8 @@
    - 前端 : 待定
    - 後端：NET.
    - PostgreSQL
+   
+## Contributor
+<a href="https://github.com/Game-as-a-Service/Gobblet-Gobblers/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Game-as-a-Service/Gobblet-Gobblers" />
+</a>

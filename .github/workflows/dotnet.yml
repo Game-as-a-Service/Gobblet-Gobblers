@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore ./Gobblet-Gobblers/src/Interface Adapter Layer/Wsa.Gaas.GobbletGobblers.Core.WebApi/
+      run: dotnet restore ./Gobblet-Gobblers/src/Interface Adapter Layer/Wsa.Gaas.GobbletGobblers.Core.WebApi/Wsa.Gaas.GobbletGobblers.Core.WebApi.csproj
 #    - name: Build
 #      run: dotnet build --no-restore ./src/Interface Adapter Layer/Wsa.Gaas.GobbletGobblers.Core.WebApi
 #    - name: Test

@@ -37,10 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Core.WebApi", "src\InterfaceAdapter\Wsa.Gaas.GobbletGobblers.Core.WebApi\Wsa.Gaas.GobbletGobblers.Core.WebApi.csproj", "{B51C5BB8-5E97-42EA-A624-31E804C4AD74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wsa.Gaas.GobbletGobblers.WebApi", "src\InterfaceAdapter\Wsa.Gaas.GobbletGobblers.WebApi\Wsa.Gaas.GobbletGobblers.WebApi.csproj", "{0DB8C14F-8939-4149-9125-EA004EDD03BA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wsa.Gaas.GobbletGobblers.Tests", "test\Wsa.Gaas.GobbletGobblers.Tests\Wsa.Gaas.GobbletGobblers.Tests.csproj", "{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,14 +87,6 @@ Global
 		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B51C5BB8-5E97-42EA-A624-31E804C4AD74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DB8C14F-8939-4149-9125-EA004EDD03BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,8 +102,6 @@ Global
 		{9DCD6ADF-5F7E-44B9-947C-C2397F21FB61} = {AAF1DFCF-987C-45B7-8893-79F23BDA51D7}
 		{862831B1-815C-4A06-A87E-8312762E0C93} = {972984BB-1B26-4F70-8831-63512BB6B848}
 		{B51C5BB8-5E97-42EA-A624-31E804C4AD74} = {AAF1DFCF-987C-45B7-8893-79F23BDA51D7}
-		{0DB8C14F-8939-4149-9125-EA004EDD03BA} = {AAF1DFCF-987C-45B7-8893-79F23BDA51D7}
-		{CFF4F0D3-22E3-4DB7-BA11-77DC66D20356} = {279F00D6-D6E9-4E39-BCD8-73A55C2E2690}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {128ACA84-CAB4-495A-868B-8F11CCFEB869}

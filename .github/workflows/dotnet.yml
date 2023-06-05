@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DOTNET_APP_PUBLISH_PROJECT_PATH: './src/Interface Adapter Layer/Wsa.Gaas.GobbletGobblers.Core.WebApi'
+  DOTNET_APP_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Wsa.Gaas.GobbletGobblers.Core.WebApi'
 
 jobs:
   build:
@@ -24,8 +24,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ${{ env.DOTNET_APP_PUBLISH_PROJECT_PATH }}
     - name: Build
       run: dotnet build --no-restore
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal
+    - name: Test
+      run: dotnet test --no-build --verbosity normal

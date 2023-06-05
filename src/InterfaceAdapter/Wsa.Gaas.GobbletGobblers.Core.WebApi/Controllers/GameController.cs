@@ -61,7 +61,7 @@ namespace Wsa.Gaas.GobbletGobblers.WebApi.Controllers
             return game;
         }
 
-        public void ShowCheckBoard(int checkerboardSize, Stack<Cock>[] board)
+        private void ShowCheckBoard(int checkerboardSize, Stack<Cock>[] board)
         {
             var bound = string.Join("\u3000", Enumerable.Range(0, checkerboardSize).Select(x => "¡X"));
             Console.WriteLine($"\u3000{bound}\u3000");

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain Layer\Wsa.Gaas.GobbletGobblers.Domain\Wsa.Gaas.GobbletGobblers.Domain.csproj" />
+    <ProjectReference Include="..\..\Domain\Wsa.Gaas.GobbletGobblers.Domain\Wsa.Gaas.GobbletGobblers.Domain.csproj" />
   </ItemGroup>
 
 </Project>

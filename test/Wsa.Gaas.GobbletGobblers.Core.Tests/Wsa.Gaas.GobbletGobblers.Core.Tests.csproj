@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Domain Layer\Wsa.Gaas.GobbletGobblers.Domain\Wsa.Gaas.GobbletGobblers.Domain.csproj" />
-    <ProjectReference Include="..\..\src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.Core.WebApi\Wsa.Gaas.GobbletGobblers.Core.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Application\Wsa.Gaas.GobbletGobblers.Application\Wsa.Gaas.GobbletGobblers.Application.csproj" />
   </ItemGroup>
 </Project>

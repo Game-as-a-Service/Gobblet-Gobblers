@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Interface Adapter Layer\Wsa.Gaas.GobbletGobblers.WebApi\Wsa.Gaas.GobbletGobblers.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\InterfaceAdapter\Wsa.Gaas.GobbletGobblers.WebApi\Wsa.Gaas.GobbletGobblers.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

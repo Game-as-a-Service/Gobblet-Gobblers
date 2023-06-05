@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Application Layer\Wsa.Gaas.GobbletGobblers.Application\Wsa.Gaas.GobbletGobblers.Application.csproj" />
+    <ProjectReference Include="..\..\Application\Wsa.Gaas.GobbletGobblers.Application\Wsa.Gaas.GobbletGobblers.Application.csproj" />
   </ItemGroup>
 
 </Project>

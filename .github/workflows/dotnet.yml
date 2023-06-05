@@ -24,8 +24,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore ${{ env.DOTNET_APP_PUBLISH_PROJECT_PATH }}
-#    - name: Build
-#      run: dotnet build --no-restore ./src/Interface Adapter Layer/Wsa.Gaas.GobbletGobblers.Core.WebApi
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
 #    - name: Test
 #      run: dotnet test --no-build --verbosity normal

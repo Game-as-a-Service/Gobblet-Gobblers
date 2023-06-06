@@ -1,0 +1,203 @@
+﻿@page "/"
+@inject HttpClient Http
+@using Gaas.GobbletGobblers.Application.UseCases;
+@using Gaas.GobbletGobblers.Application;
+@using Gaas.GobbletGobblers.Application;
+@using System.Text.Json;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gobblet Gobblers</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <input id="name" @bind-value="name" disabled="@isDisabled"></input>
+    <button @onclick="CrateGame" disabled="@isDisabled">Create</button>
+    <input id="gameId" @bind-value="gameId" disabled="@isDisabled"></input>
+    <button @onclick="JoinGame" disabled="@isDisabled">Join</button>
+    <div class="board">
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+        </div>
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+        </div>
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+        </div>
+    </div>
+
+    <div class="cock">
+        <div class="row">
+            @if (playerViewModel != null) 
+            {
+                @foreach (var item in playerViewModel.Cocks.Select((c, i) => (c, i)))
+                {
+                    var cock = item.c;
+                    var color = cock.Color.ToString();
+                    var size = "small";
+                    switch (cock.Size.Number)
+                    {
+                        case -1:
+                            size = "small";
+                            break;
+                        case 0:
+                            size = "medium";
+                            break;
+                        case 1:
+                            size = "large";
+                            break;
+                    }
+
+                    <div class="cell">
+                        <div class="@(cock.IsClick ? "onClick" : string.Empty)  btn piece @($"{size}-{color}")" @onclick="@((e) => ChangeCock(cock))"></div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+    .board {
+        display: flex;
+        flex-direction: column;
+        width: 400px;
+    }
+
+    .row {
+        display: flex;
+    }
+
+    .cell {
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        position: relative;
+    }
+
+    .piece {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .small-Orange {
+        width: 40px;
+        height: 40px;
+        background-color: Orange;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 2;
+    }
+
+    .medium-Orange {
+        width: 60px;
+        height: 60px;
+        background-color: Orange;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 1;
+    }
+
+    .large-Orange {
+        width: 80px;
+        height: 80px;
+        background-color: Orange;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 0;
+    }
+
+    .small-Blue {
+        width: 40px;
+        height: 40px;
+        background-color: blue;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 2;
+    }
+
+    .medium-Blue {
+        width: 60px;
+        height: 60px;
+        background-color: blue;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 1;
+    }
+
+    .large-Blue {
+        width: 80px;
+        height: 80px;
+        background-color: blue;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 0;
+    }
+
+    .onClick {
+        border: 4px solid red;
+    }
+</style>
+
+@code {
+    private Guid gameId;
+    private string name = string.Empty;
+    private bool isDisabled = false;
+    private PlayerViewModel? playerViewModel;
+    private int? changeCockId;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    protected async Task CrateGame()
+    {
+        var request = new CreateGameRequest
+        {
+            PlayerName = name,
+        };
+
+        var response = await Http.PostAsJsonAsync<CreateGameRequest>("Game/Create", request);
+        var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+
+        isDisabled = true;
+        gameId = gameModel.Id;
+        playerViewModel = gameModel.Players.SingleOrDefault(x => x.Name == name);
+
+        StateHasChanged();
+    }
+
+    protected async Task JoinGame()
+    {
+        var request = new JoinGameRequest
+        {
+            Id = gameId,
+            PlayerName = name,
+        };
+
+        var response = await Http.PostAsJsonAsync<JoinGameRequest>("Game/Join", request);
+        var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+
+        isDisabled = true;
+        playerViewModel = gameModel.Players.SingleOrDefault(x => x.Name == name);
+    }
+
+    protected async Task ChangeCock(CockViewModel cock)
+    {
+        //Console.WriteLine(i);
+        playerViewModel.Cocks.ToList().ForEach(x => { x.IsClick = false; });
+        cock.IsClick = true;
+        Console.WriteLine(JsonSerializer.Serialize(cock));
+    }
+}

@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using Gaas.GobbletGobblers.Application;
 using Gaas.GobbletGobblers.Application.Interfaces;
 using Gaas.GobbletGobblers.Application.UseCases;
 using Gaas.GobbletGobblers.Domain;
 using Gaas.GobbletGobblers.Domain.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gaas.GobbletGobblers.WebApi.Controllers
 {

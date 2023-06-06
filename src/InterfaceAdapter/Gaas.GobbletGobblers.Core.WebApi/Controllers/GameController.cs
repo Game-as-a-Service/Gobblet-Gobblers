@@ -61,6 +61,12 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
             return game;
         }
 
+        [HttpPost]
+        [Route("GameInfo")]
+        public async Task GameInfoAsync(GameInfoRequest request)
+        {
+        }
+
         private void ShowCheckBoard(int checkerboardSize, Stack<Cock>[] board)
         {
             var bound = string.Join("\u3000", Enumerable.Range(0, checkerboardSize).Select(x => "¡X"));

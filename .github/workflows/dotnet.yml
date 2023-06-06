@@ -10,8 +10,8 @@ on:
     branches: [ "main" ]
 
 env:
-  DOTNET_APP_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Wsa.Gaas.GobbletGobblers.Core.WebApi'
-  DOTNET_Test_PUBLISH_PROJECT_PATH: './test/Wsa.Gaas.GobbletGobblers.Core.Tests'
+  DOTNET_APP_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Gaas.GobbletGobblers.Core.WebApi'
+  DOTNET_Test_PUBLISH_PROJECT_PATH: './test/Gaas.GobbletGobblers.Core.Tests'
 
 jobs:
   build:

@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gaas.GobbletGobblers.Core.W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "discard", "discard", "{9A443C64-16F3-4048-9D4C-AD4206FA2639}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaas.GobbletGobblers.Client", "src\InterfaceAdapter\Gaas.GobbletGobblers.Client\Gaas.GobbletGobblers.Client.csproj", "{7F7C4072-960E-4AD6-86A4-AF895429FF2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gaas.GobbletGobblers.Client", "src\InterfaceAdapter\Gaas.GobbletGobblers.Client\Gaas.GobbletGobblers.Client.csproj", "{7F7C4072-960E-4AD6-86A4-AF895429FF2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -14,6 +14,8 @@ namespace Gaas.GobbletGobblers.Application
         public List<PlayerModel> Players { get; set; }
 
         public Dictionary<Guid, Line> Lines { get; set; }
+
+        public Guid? WinnerId { get; set; }
     }
 
     public class GameViewModel
@@ -25,6 +27,8 @@ namespace Gaas.GobbletGobblers.Application
         public Stack<CockViewModel>[] Board { get; set; }
 
         public List<PlayerViewModel> Players { get; set; }
+
+        public Guid? WinnerId { get; set; }
     }
 
     public class CockViewModel

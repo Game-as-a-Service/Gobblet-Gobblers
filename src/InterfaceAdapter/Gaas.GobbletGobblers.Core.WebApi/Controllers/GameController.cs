@@ -63,8 +63,11 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
 
         [HttpPost]
         [Route("GameInfo")]
-        public async Task GameInfoAsync(GameInfoRequest request)
+        public async Task<GameModel> GameInfoAsync(GameInfoRequest request)
         {
+            var game = await new GameInfoUseCase().ExecuteAsync(request, _repository);
+
+            return game;
         }
 
         private void ShowCheckBoard(int checkerboardSize, Stack<Cock>[] board)

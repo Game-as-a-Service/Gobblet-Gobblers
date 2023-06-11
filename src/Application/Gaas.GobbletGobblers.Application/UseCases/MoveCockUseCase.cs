@@ -32,6 +32,7 @@ namespace Gaas.GobbletGobblers.Application.UseCases
                 Board = game.Board,
                 Players = players,
                 Lines = game.Lines,
+                WinnerId = game.GetWinnerId(),
             };
 
             repository.Update(request.Id, game);

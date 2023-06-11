@@ -2,8 +2,9 @@
 @inject HttpClient Http
 @using Gaas.GobbletGobblers.Application.UseCases;
 @using Gaas.GobbletGobblers.Application;
-@using Gaas.GobbletGobblers.Application;
 @using System.Text.Json;
+@using System.Timers;
+@using Gaas.GobbletGobblers.Domain;
 
 <!DOCTYPE html>
 <html>
@@ -17,21 +18,36 @@
     <input id="gameId" @bind-value="gameId" disabled="@isDisabled"></input>
     <button @onclick="JoinGame" disabled="@isDisabled">Join</button>
     <div class="board">
-        <div class="row">
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-        </div>
-        <div class="row">
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-        </div>
-        <div class="row">
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-        </div>
+        @foreach (var row in Enumerable.Range(0, boardSize)) 
+        {
+            <div class="row">
+                @foreach (var col in Enumerable.Range(0, boardSize))
+                {
+                    <div class="cell" @onclick="@((e) => PutCock(col, row))">
+                        @if (board != null && board[boardSize * row + col].Any())
+                        {
+                            @foreach (var cock in board[boardSize * row + col])
+                            {
+                                var size = "small";
+                                switch (cock.Size.Number)
+                                {
+                                    case -1:
+                                        size = "small";
+                                        break;
+                                    case 0:
+                                        size = "medium";
+                                        break;
+                                    case 1:
+                                        size = "large";
+                                        break;
+                                }
+                                <div class="piece @($"{size}-{cock.Color}") @(moveClick[boardSize * row + col] ? "onClick" : string.Empty)"></div>
+                            }
+                        }
+                    </div>
+                }                  
+            </div>
+        }
     </div>
 
     <div class="cock">
@@ -57,11 +73,17 @@
                     }
 
                     <div class="cell">
-                        <div class="@(cock.IsClick ? "onClick" : string.Empty)  btn piece @($"{size}-{color}")" @onclick="@((e) => ChangeCock(cock))"></div>
+                        <div class="@(cock.IsClick ? "onClick" : string.Empty) piece @($"{size}-{color}")" @onclick="@((e) => ChangeCock(cock, item.i))"></div>
                     </div>
                 }
             }
         </div>
+        @if (winnerId.HasValue)
+        {
+            <div>
+               勝利者: @winnerName
+            </div>
+        }
     </div>
 </body>
 </html>
@@ -154,11 +176,63 @@
     private Guid gameId;
     private string name = string.Empty;
     private bool isDisabled = false;
+    private Guid playerId;
+    private int boardSize;
+    private Stack<CockViewModel>[] board;
     private PlayerViewModel? playerViewModel;
+    private List<bool> moveClick = new List<bool>();
     private int? changeCockId;
+    private Guid? winnerId;
+    private string winnerName;
+    private Timer timer;
 
     protected override async Task OnInitializedAsync()
     {
+        timer = new();
+        timer.Interval = 2000;
+        timer.Elapsed += async (object? sender, ElapsedEventArgs e) =>
+        {
+            var request = new GameInfoRequest
+            {
+                Id = gameId,
+            };
+
+            var response = await Http.PostAsJsonAsync<GameInfoRequest>("Game/GameInfo", request);
+            var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+
+            if (gameModel != null)
+            {
+                var playerModel = gameModel.Players.FirstOrDefault(p => p.Id == playerId);
+
+                playerViewModel = playerModel;
+
+                if(changeCockId.HasValue)
+                {
+                    var cock = playerViewModel.Cocks.ElementAtOrDefault(changeCockId.Value);
+                    if (cock != null)
+                    {
+                        cock.IsClick = true;
+                    }
+                }
+
+                board = gameModel.Board;
+                winnerId = gameModel.WinnerId;
+            }
+
+            if (!moveClick.Any())
+            {
+                moveClick = Enumerable.Range(0, boardSize * boardSize).Select(x => { return false; }).ToList();
+            }
+
+            if (winnerId.HasValue)
+            {
+                //Console.WriteLine(winnerId.ToString());
+                winnerName = gameModel.Players.FirstOrDefault(p => p.Id == winnerId).Name;
+                timer.Stop();
+            }
+
+            await InvokeAsync(StateHasChanged);
+        };
     }
 
     protected async Task CrateGame()
@@ -172,10 +246,17 @@
         var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
 
         isDisabled = true;
-        gameId = gameModel.Id;
-        playerViewModel = gameModel.Players.SingleOrDefault(x => x.Name == name);
 
-        StateHasChanged();
+        if (gameModel != null)
+        {
+            gameId = gameModel.Id;
+            playerId = gameModel.Players[0].Id;
+            playerViewModel = gameModel.Players[0];
+            boardSize = gameModel.BoardSize;
+            board = gameModel.Board;
+        }
+
+        timer.Enabled = true;
     }
 
     protected async Task JoinGame()
@@ -190,14 +271,68 @@
         var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
 
         isDisabled = true;
-        playerViewModel = gameModel.Players.SingleOrDefault(x => x.Name == name);
+
+        if (gameModel != null)
+        {
+            gameId = gameModel.Id;
+            playerId = gameModel.Players[1].Id;
+            playerViewModel = gameModel.Players[1];
+            boardSize = gameModel.BoardSize;
+            board = gameModel.Board;
+        }
+
+        StateHasChanged();
+
+        timer.Enabled = true;
     }
 
-    protected async Task ChangeCock(CockViewModel cock)
+    protected async Task PutCock(int x, int y)
     {
-        //Console.WriteLine(i);
+        if (winnerId.HasValue)
+        {
+            return;
+        }
+
+        if (board[x + (y * boardSize)].TryPeek(out var cockViewModel) && cockViewModel.Owner.Id == playerId)
+        {
+            moveClick[x + (y * boardSize)] = true;
+            playerViewModel.Cocks = playerViewModel.Cocks.Select(x => { x.IsClick = false; return x; }).ToList();
+            changeCockId = null;
+        } 
+        else
+        {
+            //Console.WriteLine(changeCockId.HasValue ? changeCockId.Value : "");
+
+            if (changeCockId.HasValue)
+            {
+                var request = new PutCockRequest
+                {
+                    Id = gameId,
+                    PlayerId = playerId,
+                    HandCockIndex = changeCockId.Value,
+                    Location = new Location(x, y),
+                };
+
+                var response = await Http.PostAsJsonAsync<PutCockRequest>("Game/PutCock", request);
+                var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+
+                board = gameModel.Board;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    protected async Task ChangeCock(CockViewModel cock, int index)
+    {
+        moveClick = moveClick.Select(x => false).ToList();
+
+        //Console.WriteLine(index);
+        changeCockId = index;
         playerViewModel.Cocks.ToList().ForEach(x => { x.IsClick = false; });
         cock.IsClick = true;
-        Console.WriteLine(JsonSerializer.Serialize(cock));
+        Console.WriteLine(JsonSerializer.Serialize(moveClick));
+
+        StateHasChanged();
     }
 }

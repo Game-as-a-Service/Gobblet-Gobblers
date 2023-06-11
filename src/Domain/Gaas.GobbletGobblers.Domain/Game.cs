@@ -233,5 +233,10 @@ namespace Gaas.GobbletGobblers.Domain
         {
             return GetPlayer(_winnerId!.Value);
         }
+
+        public Guid? GetWinnerId()
+        {
+            return _winnerId;
+        }
     }
 }

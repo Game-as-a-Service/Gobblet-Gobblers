@@ -5,6 +5,7 @@
 @using System.Text.Json;
 @using System.Timers;
 @using Gaas.GobbletGobblers.Domain;
+@using System.Net;
 
 <!DOCTYPE html>
 <html>
@@ -84,6 +85,11 @@
                勝利者: @winnerName
             </div>
         }
+
+        @if (errorResult != null)
+        {
+            <div>@errorResult.Message</div>
+        }       
     </div>
 </body>
 </html>
@@ -185,6 +191,7 @@
     private Guid? winnerId;
     private string winnerName;
     private Timer timer;
+    private ErrorResult? errorResult;
 
     protected override async Task OnInitializedAsync()
     {
@@ -197,8 +204,7 @@
                 Id = gameId,
             };
 
-            var response = await Http.PostAsJsonAsync<GameInfoRequest>("Game/GameInfo", request);
-            var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+            var gameModel = await PostAsJsonAsync<GameInfoRequest, GameViewModel>("Game/GameInfo", request);
 
             if (gameModel != null)
             {
@@ -242,8 +248,7 @@
             PlayerName = name,
         };
 
-        var response = await Http.PostAsJsonAsync<CreateGameRequest>("Game/Create", request);
-        var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+        var gameModel = await PostAsJsonAsync<CreateGameRequest, GameViewModel>("Game/Create", request);
 
         isDisabled = true;
 
@@ -267,8 +272,7 @@
             PlayerName = name,
         };
 
-        var response = await Http.PostAsJsonAsync<JoinGameRequest>("Game/Join", request);
-        var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+        var gameModel = await PostAsJsonAsync<JoinGameRequest, GameViewModel>("Game/Join", request);
 
         isDisabled = true;
 
@@ -313,14 +317,42 @@
                     Location = new Location(x, y),
                 };
 
-                var response = await Http.PostAsJsonAsync<PutCockRequest>("Game/PutCock", request);
-                var gameModel = await response.Content.ReadFromJsonAsync<GameViewModel>();
+                try
+                {
+                    var gameModel = await PostAsJsonAsync<PutCockRequest, GameViewModel>("Game/PutCock", request);
 
-                board = gameModel.Board;
+                    if (gameModel != null)
+                    {
+                        board = gameModel.Board;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
         }
 
         StateHasChanged();
+    }
+
+    private async Task<TResponse> PostAsJsonAsync<TRequest, TResponse>(string requestUri, TRequest request)
+        where TResponse : new()
+    {
+        errorResult = null;
+
+        var response = await Http.PostAsJsonAsync<TRequest>(requestUri, request);
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            return await response.Content.ReadFromJsonAsync<TResponse>();
+        }
+        else
+        {
+            errorResult = await response.Content.ReadFromJsonAsync<ErrorResult>();
+
+            return default;
+        }
     }
 
     protected async Task ChangeCock(CockViewModel cock, int index)

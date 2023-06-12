@@ -1,5 +1,6 @@
 using Gaas.GobbletGobblers.Application.Interfaces;
 using Gaas.GobbletGobblers.Core.WebApi;
+using Gaas.GobbletGobblers.Core.WebApi.MiddleWares;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IRepository, MemoryRepository>();
+builder.Services.AddTransient<ExceptionHandlingMiddleWare>();
 builder.Logging.ClearProviders();
 builder.Services.AddCors(options =>
 {
@@ -45,6 +47,8 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionHandlingMiddleWare>();
 
 app.Run();
 

@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Gaas.GobbletGobblers.Application.Interfaces;
+﻿using Gaas.GobbletGobblers.Application.Interfaces;
 using Gaas.GobbletGobblers.Domain;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Gaas.GobbletGobblers.Core.WebApi
 {

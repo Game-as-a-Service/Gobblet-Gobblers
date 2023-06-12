@@ -57,4 +57,9 @@ namespace Gaas.GobbletGobblers.Application
 
         public string Symbol { get; set; }
     }
+
+    public class ErrorResult
+    {
+        public string Message { get; set; }
+    }
 }

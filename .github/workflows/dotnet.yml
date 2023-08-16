@@ -11,6 +11,7 @@ on:
 
 env:
   DOTNET_APP_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Gaas.GobbletGobblers.Core.WebApi'
+  DOTNET_CLINET_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Gaas.GobbletGobblers.Client'
   DOTNET_Test_PUBLISH_PROJECT_PATH: './test/Gaas.GobbletGobblers.Core.Tests'
 
 jobs:
@@ -30,3 +31,12 @@ jobs:
       run: dotnet build ${{ env.DOTNET_APP_PUBLISH_PROJECT_PATH }} --no-restore
     - name: Test
       run: dotnet test ${{ env.DOTNET_Test_PUBLISH_PROJECT_PATH }}
+ 
+    - name: Publish .NET Core Project
+      run: dotnet publish ${{ env.DOTNET_CLINET_PUBLISH_PROJECT_PATH }}/Gaas.GobbletGobblers.Client.csproj -c Release -o release --nologo
+    
+    - name: Commit wwwroot to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.3.3
+      with:
+        BRANCH: gh-pages
+        FOLDER: release/wwwroot

@@ -35,17 +35,21 @@ jobs:
     # 修改成專案名稱
     - name: Publish .NET Core Project
       run: dotnet publish ${{ env.DOTNET_CLINET_PUBLISH_PROJECT_PATH }}/Gaas.GobbletGobblers.Client.csproj -c Release -o release --nologo
+
+    # 修改 index.html 的 base href 設定
+    - name: 修改 index.html 的 base href 設定
+      run: sed -i 's/<base href="\/" \/>/<base href="\/[REPOSITORY_NAME]\/" \/>/g' release/wwwroot/index.html
+
+    # 複製 index.html 成 404.html 
+    - name: 複製 index.html 成 404.html 
+      run: cp release/wwwroot/index.html release/wwwroot/404.html
+    
+    # 新增 .nojekyll 檔
+    - name: 新增 .nojekyll 檔
+      run: touch release/wwwroot/.nojekyll
     
     - name: Commit wwwroot to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         BRANCH: gh-pages
         FOLDER: release/wwwroot
-
-    # 修改 index.html 的 base href 設定
-    - name: 修改 index.html 的 base href 設定
-      run: sed -i 's/<base href="\/" \/>/<base href="\/[REPOSITORY_NAME]\/" \/>/g' release/wwwroot/index.html
-      
-    # 新增 .nojekyll 檔
-    - name: 新增 .nojekyll 檔
-      run: touch release/wwwroot/.nojekyll

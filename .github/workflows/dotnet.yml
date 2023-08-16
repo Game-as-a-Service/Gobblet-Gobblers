@@ -10,6 +10,7 @@ on:
     branches: [ "main" ]
 
 env:
+  REPOSITORY_NAME: 'Gobblet-Gobblers'
   DOTNET_APP_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Gaas.GobbletGobblers.Core.WebApi'
   DOTNET_CLINET_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Gaas.GobbletGobblers.Client'
   DOTNET_Test_PUBLISH_PROJECT_PATH: './test/Gaas.GobbletGobblers.Core.Tests'
@@ -38,7 +39,7 @@ jobs:
 
     # 修改 index.html 的 base href 設定
     - name: 修改 index.html 的 base href 設定
-      run: sed -i 's/<base href="\/" \/>/<base href="\/[REPOSITORY_NAME]\/" \/>/g' release/wwwroot/index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/${{ env.REPOSITORY_NAME }}\/" \/>/g' release/wwwroot/index.html
 
     # 複製 index.html 成 404.html 
     - name: 複製 index.html 成 404.html 

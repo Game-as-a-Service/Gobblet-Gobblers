@@ -1,4 +1,4 @@
-# This workflow will build a .NET project
+﻿# This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: .NET
@@ -31,7 +31,8 @@ jobs:
       run: dotnet build ${{ env.DOTNET_APP_PUBLISH_PROJECT_PATH }} --no-restore
     - name: Test
       run: dotnet test ${{ env.DOTNET_Test_PUBLISH_PROJECT_PATH }}
- 
+    
+    # 修改成專案名稱
     - name: Publish .NET Core Project
       run: dotnet publish ${{ env.DOTNET_CLINET_PUBLISH_PROJECT_PATH }}/Gaas.GobbletGobblers.Client.csproj -c Release -o release --nologo
     
@@ -40,3 +41,11 @@ jobs:
       with:
         BRANCH: gh-pages
         FOLDER: release/wwwroot
+
+    # 修改 index.html 的 base href 設定
+    - name: 修改 index.html 的 base href 設定
+      run: sed -i 's/<base href="\/" \/>/<base href="\/[REPOSITORY_NAME]\/" \/>/g' release/wwwroot/index.html
+      
+    # 新增 .nojekyll 檔
+    - name: 新增 .nojekyll 檔
+      run: touch release/wwwroot/.nojekyll

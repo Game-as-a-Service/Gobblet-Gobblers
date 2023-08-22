@@ -22,6 +22,27 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("~/games")]
+        public async Task<dynamic> GamesAsync(GameRequest request)
+        {
+            var createGameRequest = new CreateGameRequest
+            {
+                PlayerName = request.Players[0].Nickname
+            };
+
+            var createGameResponse = await new CreateGameUseCase().ExecuteAsync(createGameRequest, _repository);
+
+            var joinGameRequest = new JoinGameRequest
+            {
+                Id = createGameResponse.Id,
+                PlayerName = request.Players[1].Nickname
+            };
+            _ = await new JoinGameUseCase().ExecuteAsync(joinGameRequest, _repository);
+
+            return new { url = $"https://oneheed.github.io/Gobblet-Gobblers/games/{createGameResponse.Id}" };
+        }
+
+        [HttpPost]
         [Route("Create")]
         public async Task<GameModel> CreateAsync(CreateGameRequest request)
         {

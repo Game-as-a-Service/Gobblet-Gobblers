@@ -30,6 +30,7 @@ builder.Host.ConfigureLogging(logging =>
     logging.ClearProviders();
     logging.AddConsole();
 });
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -49,6 +50,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlingMiddleWare>();
+
+app.MapHealthChecks("/health");
 
 app.Run();
 

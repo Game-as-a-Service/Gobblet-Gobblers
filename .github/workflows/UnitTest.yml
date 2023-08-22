@@ -1,0 +1,32 @@
+﻿# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Gaas.GobbletGobblers.Core.WebApi Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  DOTNET_APP_PUBLISH_PROJECT_PATH: './src/InterfaceAdapter/Gaas.GobbletGobblers.Core.WebApi'
+  DOTNET_Test_PUBLISH_PROJECT_PATH: './test/Gaas.GobbletGobblers.Core.Tests'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.DOTNET_APP_PUBLISH_PROJECT_PATH }}
+    - name: Build
+      run: dotnet build ${{ env.DOTNET_APP_PUBLISH_PROJECT_PATH }} --no-restore
+    - name: Test
+      run: dotnet test ${{ env.DOTNET_Test_PUBLISH_PROJECT_PATH }}

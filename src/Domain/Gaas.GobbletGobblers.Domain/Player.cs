@@ -17,6 +17,11 @@ namespace Gaas.GobbletGobblers.Domain
             this.Id = Guid.NewGuid();
         }
 
+        public Player(Guid guid)
+        {
+            this.Id = guid;
+        }
+
         public Player Nameself(string name)
         {
             this.Name = name;

@@ -62,4 +62,15 @@ namespace Gaas.GobbletGobblers.Application
     {
         public string Message { get; set; }
     }
+
+
+    public class User
+    {
+        public string Id { get; set; }
+
+        public string Email { get; set; }
+
+        public string NickName { get; set; }
+    }
+
 }

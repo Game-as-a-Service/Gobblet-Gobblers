@@ -27,6 +27,7 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
         {
             var createGameRequest = new CreateGameRequest
             {
+                PlayerId = new Guid(Convert.FromBase64String(request.Players[0].Id).Take(16).ToArray()),
                 PlayerName = request.Players[0].Nickname
             };
 
@@ -35,6 +36,7 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
             var joinGameRequest = new JoinGameRequest
             {
                 Id = createGameResponse.Id,
+                PlayerId = new Guid(Convert.FromBase64String(request.Players[1].Id).Take(16).ToArray()),
                 PlayerName = request.Players[1].Nickname
             };
             _ = await new JoinGameUseCase().ExecuteAsync(joinGameRequest, _repository);

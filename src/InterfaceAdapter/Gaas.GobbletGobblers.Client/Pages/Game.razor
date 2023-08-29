@@ -1,0 +1,382 @@
+﻿@page "/games/{gameId?}"
+@inject HttpClient Http
+@using System.Timers;
+@using System.Net;
+@using Gaas.GobbletGobblers.Application;
+@using Gaas.GobbletGobblers.Application.UseCases;
+@using Gaas.GobbletGobblers.Domain;
+@using System.Text.Json;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gobblet Gobblers</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div>@GameId</div>
+    <div>@name</div>
+    <div class="board">
+        @foreach (var row in Enumerable.Range(0, boardSize))
+        {
+            <div class="row">
+                @foreach (var col in Enumerable.Range(0, boardSize))
+                {
+                    <div class="cell" @onclick="@((e) => PutCock(col, row))">
+                        @if (board != null && board[boardSize * row + col].Any())
+                        {
+                            @foreach (var cock in board[boardSize * row + col])
+                            {
+                                var size = "small";
+                                switch (cock.Size.Number)
+                                {
+                                    case -1:
+                                        size = "small";
+                                        break;
+                                    case 0:
+                                        size = "medium";
+                                        break;
+                                    case 1:
+                                        size = "large";
+                                        break;
+                                }
+                                <div class="piece @($"{size}-{cock.Color}") @(moveClick[boardSize * row + col] ? "onClick" : string.Empty)"></div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="cock">
+        <div class="row">
+            @if (playerViewModel != null)
+            {
+                @foreach (var item in playerViewModel.Cocks.Select((c, i) => (c, i)))
+                {
+                    var cock = item.c;
+                    var color = cock.Color.ToString();
+                    var size = "small";
+                    switch (cock.Size.Number)
+                    {
+                        case -1:
+                            size = "small";
+                            break;
+                        case 0:
+                            size = "medium";
+                            break;
+                        case 1:
+                            size = "large";
+                            break;
+                    }
+
+                    <div class="cell">
+                        <div class="@(cock.IsClick ? "onClick" : string.Empty) piece @($"{size}-{color}")" @onclick="@((e) => ChangeCock(cock, item.i))"></div>
+                    </div>
+                }
+            }
+        </div>
+        @if (winnerId.HasValue)
+        {
+            <div>
+                勝利者: @winnerName
+            </div>
+        }
+
+        @if (errorResult != null)
+        {
+            <div>@errorResult.Message</div>
+        }
+    </div>
+</body>
+</html>
+
+<style>
+    .board {
+        display: flex;
+        flex-direction: column;
+        width: 400px;
+    }
+
+    .row {
+        display: flex;
+    }
+
+    .cell {
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        position: relative;
+    }
+
+    .piece {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .small-Orange {
+        width: 40px;
+        height: 40px;
+        background-color: Orange;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 2;
+    }
+
+    .medium-Orange {
+        width: 60px;
+        height: 60px;
+        background-color: Orange;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 1;
+    }
+
+    .large-Orange {
+        width: 80px;
+        height: 80px;
+        background-color: Orange;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 0;
+    }
+
+    .small-Blue {
+        width: 40px;
+        height: 40px;
+        background-color: blue;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 2;
+    }
+
+    .medium-Blue {
+        width: 60px;
+        height: 60px;
+        background-color: blue;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 1;
+    }
+
+    .large-Blue {
+        width: 80px;
+        height: 80px;
+        background-color: blue;
+        border-radius: 50%;
+        border: 1px solid white;
+        z-index: 0;
+    }
+
+    .onClick {
+        border: 4px solid red;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public string? GameId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Token { get; set; }
+
+    private Timer timer;
+
+    private ErrorResult? errorResult;
+
+    private Guid playerId;
+
+    private string name = string.Empty;
+
+    private PlayerViewModel? playerViewModel;
+
+    private int? changeCockId;
+
+    private Stack<CockViewModel>[] board;
+
+    private int boardSize;
+
+    private Guid? winnerId;
+
+    private string winnerName;
+
+    private List<bool> moveClick = new List<bool>();
+
+    public Game()
+    {
+        timer = new();
+        timer.Interval = 2000;
+        timer.Elapsed += async (object? sender, ElapsedEventArgs e) =>
+        {
+            var request = new GameInfoRequest
+            {
+                Id = Guid.Parse(this.GameId),
+            };
+
+            var gameModel = await PostAsJsonAsync<GameInfoRequest, GameViewModel>("Game/GameInfo", request);
+
+            if (gameModel != null)
+            {
+                if (board == null)
+                {
+                    boardSize = gameModel.BoardSize;
+                    board = gameModel.Board;
+                }
+
+                var playerModel = gameModel.Players.FirstOrDefault(p => p.Id == playerId);
+
+                playerViewModel = playerModel;
+
+                if (changeCockId.HasValue)
+                {
+                    var cock = playerViewModel.Cocks.ElementAtOrDefault(changeCockId.Value);
+                    if (cock != null)
+                    {
+                        cock.IsClick = true;
+                    }
+                }
+
+                board = gameModel.Board;
+                winnerId = gameModel.WinnerId;
+            }
+
+            if (!moveClick.Any())
+            {
+                moveClick = Enumerable.Range(0, boardSize * boardSize).Select(x => { return false; }).ToList();
+            }
+
+            if (winnerId.HasValue)
+            {
+                //Console.WriteLine(winnerId.ToString());
+                winnerName = gameModel.Players.FirstOrDefault(p => p.Id == winnerId).Name;
+                timer.Stop();
+            }
+
+            await InvokeAsync(StateHasChanged);
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await GetAsJsonAsync<User>();
+
+        var bytes = Convert.FromBase64String(user.Id);
+
+        playerId = new Guid(bytes.Take(16).ToArray());
+        name = user.NickName;
+
+        timer.Enabled = true;
+    }
+
+    protected async Task PutCock(int x, int y)
+    {
+        if (winnerId.HasValue)
+        {
+            return;
+        }
+
+        if (board[x + (y * boardSize)].TryPeek(out var cockViewModel) && cockViewModel.Owner.Id == playerId)
+        {
+            moveClick[x + (y * boardSize)] = true;
+            playerViewModel.Cocks = playerViewModel.Cocks.Select(x => { x.IsClick = false; return x; }).ToList();
+            changeCockId = null;
+        }
+        else
+        {
+            //Console.WriteLine(changeCockId.HasValue ? changeCockId.Value : "");
+
+            if (changeCockId.HasValue)
+            {
+                var request = new PutCockRequest
+                    {
+                        Id = Guid.Parse(this.GameId),
+                        PlayerId = playerId,
+                        HandCockIndex = changeCockId.Value,
+                        Location = new Location(x, y),
+                    };
+
+                try
+                {
+                    var gameModel = await PostAsJsonAsync<PutCockRequest, GameViewModel>("Game/PutCock", request);
+
+                    if (gameModel != null)
+                    {
+                        board = gameModel.Board;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    protected async Task ChangeCock(CockViewModel cock, int index)
+    {
+        moveClick = moveClick.Select(x => false).ToList();
+
+        //Console.WriteLine(index);
+        changeCockId = index;
+        playerViewModel.Cocks.ToList().ForEach(x => { x.IsClick = false; });
+        cock.IsClick = true;
+        Console.WriteLine(JsonSerializer.Serialize(moveClick));
+
+        StateHasChanged();
+    }
+
+    private async Task<TResponse> PostAsJsonAsync<TRequest, TResponse>(string requestUri, TRequest request)
+        where TResponse : new()
+    {
+        errorResult = null;
+
+        var response = await Http.PostAsJsonAsync<TRequest>(requestUri, request);
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            return await response.Content.ReadFromJsonAsync<TResponse>();
+        }
+        else
+        {
+            errorResult = await response.Content.ReadFromJsonAsync<ErrorResult>();
+
+            return default;
+        }
+    }
+
+    private async Task<TResponse> GetAsJsonAsync<TResponse>()
+        where TResponse : new()
+    {
+        try
+        {
+            errorResult = null;
+
+            var http = new HttpClient();
+            http.BaseAddress = new Uri("https://api.gaas.waterballsa.tw");
+            http.DefaultRequestHeaders.Add("Authorization", $"Bearer {Token}");
+
+            var response = await http.GetAsync("/users/me");
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return await response.Content.ReadFromJsonAsync<TResponse>();
+            }
+            else
+            {
+                errorResult = await response.Content.ReadFromJsonAsync<ErrorResult>();
+
+                return default;
+            }
+        }
+        catch (Exception ex)
+        {           
+            throw;
+        }
+    }
+}

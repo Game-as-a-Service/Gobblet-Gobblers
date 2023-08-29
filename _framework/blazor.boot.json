@@ -7,10 +7,10 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "Gaas.GobbletGobblers.Application.dll": "sha256-QJhwO9CW9rJlcy+61jWyAOqwW2n7L\/AHM3Ysn0D\/07o=",
-      "Gaas.GobbletGobblers.Client.dll": "sha256-o\/yHZ3bAowUnXKzvoF0K8\/dVas6F2+pLVNCscYzxPf8=",
-      "Gaas.GobbletGobblers.Domain.dll": "sha256-I3dloOD2B8duGmkFxVKDJmdrGikTnfQPApu5Z0Z2q0w=",
-      "Microsoft.AspNetCore.Components.dll": "sha256-UabUlB7aWjH5BvwRnyqjM2GI2ndghGtyO8NpEDStCsA=",
+      "Gaas.GobbletGobblers.Application.dll": "sha256-DOlBE\/hMfVCeLC3iL7Z+iwsFkYhwr1EEDVcXzKM8eLw=",
+      "Gaas.GobbletGobblers.Client.dll": "sha256-a43qG1A\/LpRAVMKnFdM0dde4lvljeV8mBmb6FJOcO14=",
+      "Gaas.GobbletGobblers.Domain.dll": "sha256-RSTGcAo8EyKmBD8RQz892lClxD1PHo\/10W42ZP85Hcs=",
+      "Microsoft.AspNetCore.Components.dll": "sha256-n47KetzV3LMAyc6lSprdxMDeWs7X9KoowyiT\/ix1I18=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-4TqzKuWcKdJnczmSDUHqaVnsn5DCy9dQ8V92ND3GbRc=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-p7s9bTaAM2TeNsO465BY5ATxAHdfWw\/IoNQqsa9iXhI=",
       "Microsoft.EntityFrameworkCore.Abstractions.dll": "sha256-t\/GI\/h9opBsB8+TwqiLAyVTkI9JkTdt8swRFoZgWdVM=",
@@ -47,7 +47,7 @@
       "System.Linq.Expressions.dll": "sha256-biNeK71nH+7V7U+Z2ZmtY39Y7hgfoTHsF2Ampv5mbbY=",
       "System.Linq.Queryable.dll": "sha256-MCF1c6cj5tl8uq+osjSq8AB9frqS70VMecfU2Y\/UNNg=",
       "System.Memory.dll": "sha256-N6CNFXUzHWuw3tASmJ0rfTG5ik+PFxNff5uM2v5rVf4=",
-      "System.Net.Http.dll": "sha256-SfgBFvQC3k75i1BVvSlECZvuWqTqRP8bWmnnbn77HFQ=",
+      "System.Net.Http.dll": "sha256-LM2l10bccyNgFpniPM2oEu6SKgRGYPR5DiHl+Uh1XaM=",
       "System.Net.Http.Json.dll": "sha256-jL+Bj1jbl\/CNmzWOSn9L1bZGfb2Q\/8qg9FnYgwqS57Q=",
       "System.Net.NetworkInformation.dll": "sha256-e0P+hTTId8meklh7R4Gn7kWovE7hI3Hoe\/S62xovxYI=",
       "System.Net.Primitives.dll": "sha256-E07NIdPmR\/o+gMcEDTz5MxtVzdE6RpFSthcIIAShXrs=",

@@ -33,23 +33,23 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-iotiEku6HBAc5Y1+lEauBv7GZQLNuVvPZxLwgl0Ymfc=",
+      "hash": "sha256-5sS6H0FuO\/hgXTpa+FlclHokiMo+utN0NJFecpyB1Kc=",
       "url": "_framework\/blazor.boot.json"
     },
     {
-      "hash": "sha256-QJhwO9CW9rJlcy+61jWyAOqwW2n7L\/AHM3Ysn0D\/07o=",
+      "hash": "sha256-DOlBE\/hMfVCeLC3iL7Z+iwsFkYhwr1EEDVcXzKM8eLw=",
       "url": "_framework\/Gaas.GobbletGobblers.Application.dll"
     },
     {
-      "hash": "sha256-o\/yHZ3bAowUnXKzvoF0K8\/dVas6F2+pLVNCscYzxPf8=",
+      "hash": "sha256-a43qG1A\/LpRAVMKnFdM0dde4lvljeV8mBmb6FJOcO14=",
       "url": "_framework\/Gaas.GobbletGobblers.Client.dll"
     },
     {
-      "hash": "sha256-I3dloOD2B8duGmkFxVKDJmdrGikTnfQPApu5Z0Z2q0w=",
+      "hash": "sha256-RSTGcAo8EyKmBD8RQz892lClxD1PHo\/10W42ZP85Hcs=",
       "url": "_framework\/Gaas.GobbletGobblers.Domain.dll"
     },
     {
-      "hash": "sha256-UabUlB7aWjH5BvwRnyqjM2GI2ndghGtyO8NpEDStCsA=",
+      "hash": "sha256-n47KetzV3LMAyc6lSprdxMDeWs7X9KoowyiT\/ix1I18=",
       "url": "_framework\/Microsoft.AspNetCore.Components.dll"
     },
     {
@@ -197,7 +197,7 @@
       "url": "_framework\/System.Memory.dll"
     },
     {
-      "hash": "sha256-SfgBFvQC3k75i1BVvSlECZvuWqTqRP8bWmnnbn77HFQ=",
+      "hash": "sha256-LM2l10bccyNgFpniPM2oEu6SKgRGYPR5DiHl+Uh1XaM=",
       "url": "_framework\/System.Net.Http.dll"
     },
     {
@@ -277,5 +277,5 @@
       "url": "manifest.json"
     }
   ],
-  "version": "WeFGCSw8"
+  "version": "szEHj8G6"
 };

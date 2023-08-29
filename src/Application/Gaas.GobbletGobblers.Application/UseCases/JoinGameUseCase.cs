@@ -14,7 +14,7 @@ namespace Gaas.GobbletGobblers.Application.UseCases
                 throw new Exception();
 
             // 改
-            var player = new Player(request.PlayerId);
+            var player = request.PlayerId == null ? new Player() : new Player(request.PlayerId.Value);
             player.Nameself(request.PlayerName);
             game.JoinPlayer(player);
 

@@ -245,6 +245,7 @@
     {
         var request = new CreateGameRequest
         {
+            PlayerId = null,
             PlayerName = name,
         };
 
@@ -269,6 +270,7 @@
         var request = new JoinGameRequest
         {
             Id = gameId,
+            PlayerId = null,
             PlayerName = name,
         };
 

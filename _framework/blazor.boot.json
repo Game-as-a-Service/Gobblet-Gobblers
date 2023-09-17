@@ -8,7 +8,7 @@
   "resources": {
     "assembly": {
       "Gaas.GobbletGobblers.Application.dll": "sha256-DOlBE\/hMfVCeLC3iL7Z+iwsFkYhwr1EEDVcXzKM8eLw=",
-      "Gaas.GobbletGobblers.Client.dll": "sha256-a43qG1A\/LpRAVMKnFdM0dde4lvljeV8mBmb6FJOcO14=",
+      "Gaas.GobbletGobblers.Client.dll": "sha256-7RTHqB3T3VpXYX+TT4myiSqkg4O4WZ7jXo85syop34s=",
       "Gaas.GobbletGobblers.Domain.dll": "sha256-RSTGcAo8EyKmBD8RQz892lClxD1PHo\/10W42ZP85Hcs=",
       "Microsoft.AspNetCore.Components.dll": "sha256-n47KetzV3LMAyc6lSprdxMDeWs7X9KoowyiT\/ix1I18=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-4TqzKuWcKdJnczmSDUHqaVnsn5DCy9dQ8V92ND3GbRc=",

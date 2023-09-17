@@ -25,6 +25,11 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
         [Route("~/games")]
         public async Task<dynamic> GamesAsync(GameRequest request)
         {
+            if (request.Players.Count != 2)
+            {
+                throw new Exception("Requires at least two players to play");
+            }
+
             var createGameRequest = new CreateGameRequest
             {
                 PlayerId = new Guid(Convert.FromBase64String(request.Players[0].Id).Take(16).ToArray()),

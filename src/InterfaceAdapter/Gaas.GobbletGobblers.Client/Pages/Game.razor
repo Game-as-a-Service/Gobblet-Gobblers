@@ -293,7 +293,7 @@
     }
 
     public bool IsConnected => !string.IsNullOrEmpty(name) &&
-        gameId != default &&
+        GameId != default &&
         hubConnection.State == HubConnectionState.Connected;
 
     protected async Task PutCock(int x, int y)

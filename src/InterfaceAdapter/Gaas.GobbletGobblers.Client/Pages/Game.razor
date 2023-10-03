@@ -246,48 +246,16 @@
             StateHasChanged();
         });
 
-        hubConnection.On<GameViewModel>("GameInfo", async (gameModel) =>
+        var request = new GameInfoRequest
         {
-            if (gameModel != null)
-            {
-                if (board == null)
-                {
-                    boardSize = gameModel.BoardSize;
-                    board = gameModel.Board;
-                }
+            Id = Guid.Parse(this.GameId),
+        };
 
-                var playerModel = gameModel.Players.FirstOrDefault(p => p.Id == playerId);
+        var gameModel = await PostAsJsonAsync<GameInfoRequest, GameViewModel>("Game/GameInfo", request);
 
-                playerViewModel = playerModel;
+        await GameModelAction(gameModel);
 
-                if (changeCockId.HasValue)
-                {
-                    var cock = playerViewModel.Cocks.ElementAtOrDefault(changeCockId.Value);
-                    if (cock != null)
-                    {
-                        cock.IsClick = true;
-                    }
-                }
-
-                board = gameModel.Board;
-                winnerId = gameModel.WinnerId;
-            }
-
-            if (!moveClick.Any())
-            {
-                moveClick = Enumerable.Range(0, boardSize * boardSize).Select(x => { return false; }).ToList();
-            }
-
-            if (winnerId.HasValue)
-            {
-                //Console.WriteLine(winnerId.ToString());
-                winnerName = gameModel.Players.FirstOrDefault(p => p.Id == winnerId).Name;
-
-                await hubConnection.StopAsync();
-            }
-
-            await InvokeAsync(StateHasChanged);
-        });
+        hubConnection.On<GameViewModel>("GameInfo", GameModelAction);
 
         await hubConnection.StartAsync();
 
@@ -295,6 +263,49 @@
         {
             await hubConnection.SendAsync("JoinRoom", GameId.ToString(), name);
         }
+    }
+
+    public async Task GameModelAction(GameViewModel gameModel)
+    {
+        if (gameModel != null)
+        {
+            if (board == null)
+            {
+                boardSize = gameModel.BoardSize;
+                board = gameModel.Board;
+            }
+
+            var playerModel = gameModel.Players.FirstOrDefault(p => p.Id == playerId);
+
+            playerViewModel = playerModel;
+
+            if (changeCockId.HasValue)
+            {
+                var cock = playerViewModel.Cocks.ElementAtOrDefault(changeCockId.Value);
+                if (cock != null)
+                {
+                    cock.IsClick = true;
+                }
+            }
+
+            board = gameModel.Board;
+            winnerId = gameModel.WinnerId;
+        }
+
+        if (!moveClick.Any())
+        {
+            moveClick = Enumerable.Range(0, boardSize * boardSize).Select(x => { return false; }).ToList();
+        }
+
+        if (winnerId.HasValue)
+        {
+            //Console.WriteLine(winnerId.ToString());
+            winnerName = gameModel.Players.FirstOrDefault(p => p.Id == winnerId).Name;
+
+            await hubConnection.StopAsync();
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
     public bool IsConnected => !string.IsNullOrEmpty(name) &&

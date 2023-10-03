@@ -1,12 +1,11 @@
 ﻿@page "/"
 @inject HttpClient Http
 @inject IConfiguration Configuration
+@using System.Net;
+@using System.Text.Json;
 @using Gaas.GobbletGobblers.Application.UseCases;
 @using Gaas.GobbletGobblers.Application;
-@using System.Text.Json;
-@using System.Timers;
 @using Gaas.GobbletGobblers.Domain;
-@using System.Net;
 @using Microsoft.AspNetCore.SignalR.Client
 
 <!DOCTYPE html>
@@ -224,7 +223,7 @@
 
         hubConnection.On<SendMessageModel>("ReceiveMessage", (model) =>
         {
-            var encodedMsg = $"Json {model.PlayerName}: {model.Message}";
+            var encodedMsg = $"{model.PlayerName}: {model.Message}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
@@ -263,7 +262,7 @@
                 await hubConnection.StopAsync();
             }
 
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         });
 
         await hubConnection.StartAsync();

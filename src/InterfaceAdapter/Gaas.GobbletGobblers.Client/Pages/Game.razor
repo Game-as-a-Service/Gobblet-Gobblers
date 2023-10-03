@@ -1,11 +1,12 @@
 ﻿@page "/games/{gameId?}"
 @inject HttpClient Http
-@using System.Timers;
+@inject IConfiguration Configuration
 @using System.Net;
+@using System.Text.Json;
 @using Gaas.GobbletGobblers.Application;
 @using Gaas.GobbletGobblers.Application.UseCases;
 @using Gaas.GobbletGobblers.Domain;
-@using System.Text.Json;
+@using Microsoft.AspNetCore.SignalR.Client;
 
 <!DOCTYPE html>
 <html>
@@ -77,12 +78,28 @@
                 }
             }
         </div>
+
+        <div class="form-group">
+            <label>
+                Message:
+                <input @bind="messageInput" size="50" />
+            </label>
+        </div>
+        <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
         @if (winnerId.HasValue)
         {
             <div>
                 勝利者: @winnerName
             </div>
         }
+
+        <ul id="messagesList">
+            @foreach (var message in messages)
+            {
+                <li>@message</li>
+            }
+        </ul>
 
         @if (errorResult != null)
         {
@@ -184,7 +201,9 @@
     [SupplyParameterFromQuery]
     public string? Token { get; set; }
 
-    private Timer timer;
+    private HubConnection hubConnection;
+    private List<string> messages = new List<string>();
+    private string messageInput;
 
     private ErrorResult? errorResult;
 
@@ -206,19 +225,29 @@
 
     private List<bool> moveClick = new List<bool>();
 
-    public Game()
+    protected override async Task OnInitializedAsync()
     {
-        timer = new();
-        timer.Interval = 2000;
-        timer.Elapsed += async (object? sender, ElapsedEventArgs e) =>
+        var user = await GetAsJsonAsync<User>();
+
+        var bytes = Convert.FromBase64String(user.Id);
+
+        playerId = new Guid(bytes.Take(16).ToArray());
+        name = user.NickName;
+
+        var baseUrl = Configuration.GetValue<string>("BaseUrl");
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{baseUrl}/gameHub")
+            .Build();
+
+        hubConnection.On<SendMessageModel>("ReceiveMessage", (model) =>
         {
-            var request = new GameInfoRequest
-            {
-                Id = Guid.Parse(this.GameId),
-            };
+            var encodedMsg = $"{model.PlayerName}: {model.Message}";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
 
-            var gameModel = await PostAsJsonAsync<GameInfoRequest, GameViewModel>("Game/GameInfo", request);
-
+        hubConnection.On<GameViewModel>("GameInfo", async (gameModel) =>
+        {
             if (gameModel != null)
             {
                 if (board == null)
@@ -253,24 +282,19 @@
             {
                 //Console.WriteLine(winnerId.ToString());
                 winnerName = gameModel.Players.FirstOrDefault(p => p.Id == winnerId).Name;
-                timer.Stop();
+
+                await hubConnection.StopAsync();
             }
 
             await InvokeAsync(StateHasChanged);
-        };
+        });
+
+        await hubConnection.StartAsync();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var user = await GetAsJsonAsync<User>();
-
-        var bytes = Convert.FromBase64String(user.Id);
-
-        playerId = new Guid(bytes.Take(16).ToArray());
-        name = user.NickName;
-
-        timer.Enabled = true;
-    }
+    public bool IsConnected => !string.IsNullOrEmpty(name) &&
+        gameId != default &&
+        hubConnection.State == HubConnectionState.Connected;
 
     protected async Task PutCock(int x, int y)
     {
@@ -318,19 +342,6 @@
         StateHasChanged();
     }
 
-    protected async Task ChangeCock(CockViewModel cock, int index)
-    {
-        moveClick = moveClick.Select(x => false).ToList();
-
-        //Console.WriteLine(index);
-        changeCockId = index;
-        playerViewModel.Cocks.ToList().ForEach(x => { x.IsClick = false; });
-        cock.IsClick = true;
-        Console.WriteLine(JsonSerializer.Serialize(moveClick));
-
-        StateHasChanged();
-    }
-
     private async Task<TResponse> PostAsJsonAsync<TRequest, TResponse>(string requestUri, TRequest request)
         where TResponse : new()
     {
@@ -348,6 +359,27 @@
 
             return default;
         }
+    }
+
+    protected async Task ChangeCock(CockViewModel cock, int index)
+    {
+        moveClick = moveClick.Select(x => false).ToList();
+
+        //Console.WriteLine(index);
+        changeCockId = index;
+        playerViewModel.Cocks.ToList().ForEach(x => { x.IsClick = false; });
+        cock.IsClick = true;
+        Console.WriteLine(JsonSerializer.Serialize(moveClick));
+
+        StateHasChanged();
+    }
+
+    async Task Send() =>
+        await hubConnection.SendAsync("SendMessage", GameId, name, messageInput);
+
+    public void Dispose()
+    {
+        _ = hubConnection?.DisposeAsync();
     }
 
     private async Task<TResponse> GetAsJsonAsync<TResponse>()

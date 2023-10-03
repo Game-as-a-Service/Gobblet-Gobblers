@@ -1,5 +1,6 @@
 using Gaas.GobbletGobblers.Application.Interfaces;
 using Gaas.GobbletGobblers.Core.WebApi;
+using Gaas.GobbletGobblers.Core.WebApi.Hubs;
 using Gaas.GobbletGobblers.Core.WebApi.MiddleWares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,7 @@ builder.Host.ConfigureLogging(logging =>
     logging.AddConsole();
 });
 builder.Services.AddHealthChecks();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -52,6 +54,8 @@ app.MapControllers();
 app.UseMiddleware<ExceptionHandlingMiddleWare>();
 
 app.MapHealthChecks("/health");
+
+app.MapHub<GameHub>("/gameHub");
 
 app.Run();
 

@@ -6,7 +6,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://putaonini.zeabur.app") });
-//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5075") });
+var environment = builder.HostEnvironment.Environment;
+var baseAddress = builder.Configuration.GetValue<string>("BaseUrl");
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress!) });
 
 await builder.Build().RunAsync();

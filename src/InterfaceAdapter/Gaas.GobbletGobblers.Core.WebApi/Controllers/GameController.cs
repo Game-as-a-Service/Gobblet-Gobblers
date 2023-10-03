@@ -1,9 +1,11 @@
 using Gaas.GobbletGobblers.Application;
 using Gaas.GobbletGobblers.Application.Interfaces;
 using Gaas.GobbletGobblers.Application.UseCases;
+using Gaas.GobbletGobblers.Core.WebApi.Hubs;
 using Gaas.GobbletGobblers.Domain;
 using Gaas.GobbletGobblers.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Gaas.GobbletGobblers.WebApi.Controllers
 {
@@ -15,9 +17,12 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
 
         private readonly IRepository _repository;
 
-        public GameController(ILogger<GameController> logger, IRepository repository)
+        private readonly IHubContext<GameHub> _hubContext;
+
+        public GameController(ILogger<GameController> logger, IHubContext<GameHub> hubContext, IRepository repository)
         {
             _logger = logger;
+            _hubContext = hubContext;
             _repository = repository;
         }
 
@@ -60,7 +65,11 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
         [Route("Join")]
         public async Task<GameModel> JoinAsync(JoinGameRequest request)
         {
-            return await new JoinGameUseCase().ExecuteAsync(request, _repository);
+            var game = await new JoinGameUseCase().ExecuteAsync(request, _repository);
+
+            SendGameInfo(game.Id.ToString(), game);
+
+            return game;
         }
 
         [HttpPost]
@@ -72,6 +81,7 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
             //_logger.LogInformation($"{game.Players.FirstOrDefault(x => x.Id == request.PlayerId)?.Name} Put Cock Success");
 
             ShowCheckBoard(game.BoardSize, game.Board);
+            SendGameInfo(game.Id.ToString(), game);
 
             return game;
         }
@@ -85,6 +95,7 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
             //_logger.LogInformation($"{game.Players.FirstOrDefault(x => x.Id == request.PlayerId)?.Name} Move Cock Success");
 
             ShowCheckBoard(game.BoardSize, game.Board);
+            SendGameInfo(game.Id.ToString(), game);
 
             return game;
         }
@@ -147,6 +158,11 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
             Console.ForegroundColor = consoleColor;
             Console.Write(symbol);
             Console.ResetColor();
+        }
+
+        private void SendGameInfo(string gameId, GameModel game)
+        {
+            _hubContext.Clients.Group(gameId).SendAsync("GameInfo", game);
         }
     }
 }

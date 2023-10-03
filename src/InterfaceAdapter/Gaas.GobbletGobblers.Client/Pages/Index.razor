@@ -1,11 +1,13 @@
 ﻿@page "/"
 @inject HttpClient Http
+@inject IConfiguration Configuration
 @using Gaas.GobbletGobblers.Application.UseCases;
 @using Gaas.GobbletGobblers.Application;
 @using System.Text.Json;
 @using System.Timers;
 @using Gaas.GobbletGobblers.Domain;
 @using System.Net;
+@using Microsoft.AspNetCore.SignalR.Client
 
 <!DOCTYPE html>
 <html>
@@ -79,12 +81,28 @@
                 }
             }
         </div>
+
+        <div class="form-group">
+            <label>
+                Message:
+                <input @bind="messageInput" size="50" />
+            </label>
+        </div>
+        <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
         @if (winnerId.HasValue)
         {
             <div>
                勝利者: @winnerName
             </div>
         }
+
+        <ul id="messagesList">
+            @foreach (var message in messages)
+            {
+                <li>@message</li>
+            }
+        </ul>
 
         @if (errorResult != null)
         {
@@ -179,6 +197,10 @@
 </style>
 
 @code {
+    private HubConnection hubConnection;
+    private List<string> messages = new List<string>();
+    private string messageInput;
+
     private Guid gameId;
     private string name = string.Empty;
     private bool isDisabled = false;
@@ -190,29 +212,32 @@
     private int? changeCockId;
     private Guid? winnerId;
     private string winnerName;
-    private Timer timer;
+
     private ErrorResult? errorResult;
 
     protected override async Task OnInitializedAsync()
     {
-        timer = new();
-        timer.Interval = 2000;
-        timer.Elapsed += async (object? sender, ElapsedEventArgs e) =>
+        var baseUrl = Configuration.GetValue<string>("BaseUrl");
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{baseUrl}/gameHub")
+            .Build();
+
+        hubConnection.On<SendMessageModel>("ReceiveMessage", (model) =>
         {
-            var request = new GameInfoRequest
-            {
-                Id = gameId,
-            };
+            var encodedMsg = $"Json {model.PlayerName}: {model.Message}";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
 
-            var gameModel = await PostAsJsonAsync<GameInfoRequest, GameViewModel>("Game/GameInfo", request);
-
+        hubConnection.On<GameViewModel>("GameInfo", async (gameModel) =>
+        {
             if (gameModel != null)
             {
                 var playerModel = gameModel.Players.FirstOrDefault(p => p.Id == playerId);
 
                 playerViewModel = playerModel;
 
-                if(changeCockId.HasValue)
+                if (changeCockId.HasValue)
                 {
                     var cock = playerViewModel.Cocks.ElementAtOrDefault(changeCockId.Value);
                     if (cock != null)
@@ -234,12 +259,19 @@
             {
                 //Console.WriteLine(winnerId.ToString());
                 winnerName = gameModel.Players.FirstOrDefault(p => p.Id == winnerId).Name;
-                timer.Stop();
+
+                await hubConnection.StopAsync();
             }
 
-            await InvokeAsync(StateHasChanged);
-        };
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
     }
+
+    public bool IsConnected => !string.IsNullOrEmpty(name) &&
+        gameId != default &&
+        hubConnection.State == HubConnectionState.Connected;
 
     protected async Task CrateGame()
     {
@@ -260,9 +292,9 @@
             playerViewModel = gameModel.Players[0];
             boardSize = gameModel.BoardSize;
             board = gameModel.Board;
-        }
 
-        timer.Enabled = true;
+            await hubConnection.SendAsync("JoinRoom", gameModel.Id.ToString(), name);
+        }
     }
 
     protected async Task JoinGame()
@@ -285,11 +317,11 @@
             playerViewModel = gameModel.Players[1];
             boardSize = gameModel.BoardSize;
             board = gameModel.Board;
+
+            await hubConnection.SendAsync("JoinRoom", gameModel.Id.ToString(), name);
         }
 
         StateHasChanged();
-
-        timer.Enabled = true;
     }
 
     protected async Task PutCock(int x, int y)
@@ -368,5 +400,13 @@
         Console.WriteLine(JsonSerializer.Serialize(moveClick));
 
         StateHasChanged();
+    }
+
+    async Task Send() =>
+        await hubConnection.SendAsync("SendMessage", gameId, name, messageInput);
+
+    public void Dispose()
+    {
+        _ = hubConnection?.DisposeAsync();
     }
 }

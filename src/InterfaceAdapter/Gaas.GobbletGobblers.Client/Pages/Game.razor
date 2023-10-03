@@ -290,6 +290,11 @@
         });
 
         await hubConnection.StartAsync();
+
+        if (!string.IsNullOrEmpty(GameId))
+        {
+            await hubConnection.SendAsync("JoinRoom", GameId.ToString(), name);
+        }
     }
 
     public bool IsConnected => !string.IsNullOrEmpty(name) &&

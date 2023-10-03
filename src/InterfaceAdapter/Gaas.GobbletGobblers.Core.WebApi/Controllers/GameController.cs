@@ -49,7 +49,10 @@ namespace Gaas.GobbletGobblers.WebApi.Controllers
                 PlayerId = new Guid(Convert.FromBase64String(request.Players[1].Id).Take(16).ToArray()),
                 PlayerName = request.Players[1].Nickname
             };
-            _ = await new JoinGameUseCase().ExecuteAsync(joinGameRequest, _repository);
+
+            var game = await new JoinGameUseCase().ExecuteAsync(joinGameRequest, _repository);
+
+            SendGameInfo(game.Id.ToString(), game);
 
             return new { url = $"https://oneheed.github.io/Gobblet-Gobblers/games/{createGameResponse.Id}" };
         }

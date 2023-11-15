@@ -217,6 +217,7 @@
     protected override async Task OnInitializedAsync()
     {
         var baseUrl = Configuration.GetValue<string>("BaseUrl");
+
         hubConnection = new HubConnectionBuilder()
             .WithUrl($"{baseUrl}/gameHub")
             .Build();

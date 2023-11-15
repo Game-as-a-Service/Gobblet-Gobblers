@@ -11,4 +11,6 @@ var baseAddress = builder.Configuration.GetValue<string>("BaseUrl");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress!) });
 
+Console.WriteLine($"{environment}:{baseAddress}");
+
 await builder.Build().RunAsync();
